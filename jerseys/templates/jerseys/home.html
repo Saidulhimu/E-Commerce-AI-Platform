@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 KitZone 2026 | Premium World Cup Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #004b23;
+            --accent-color: #ffb703;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-dark: #1e293b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.55)), 
+                        url('https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        /* 🟢 ১. নতুন প্রিমিয়াম ন্যাভবার (Search & Cart সহ) */
+        .navbar {
+            background: #004b23;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .nav-logo {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+        .nav-logo span { color: var(--accent-color); }
+        
+        .search-container {
+            flex: 0 1 400px;
+            position: relative;
+            margin: 0 20px;
+        }
+        .search-container input {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 30px;
+            border: none;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        .search-container button {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            background: #ffb703;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .cart-icon {
+            color: #fff;
+            font-size: 1.3rem;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .cart-icon:hover { transform: scale(1.1); }
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 50%;
+            font-weight: 700;
+        }
+
+        /* 📸 ২. বড় অ্যানিমেটেড হিরো ব্যানার সেকশন */
+        .hero-banner {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+                        url('https://i.ibb.co/689N1Yf/football-banner-placeholder.png') no-repeat center center; /* এখানে তুমি তোমার প্লেয়ারদের ইলাস্ট্রেশন ইমেজ ইউআরএল বসাতে পারবে */
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+        }
+        .hero-banner h2 { font-size: 2.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+
+        /* 🧱 ৩. তোমার স্ক্রিনশটের মতো ক্যাটাগরি গ্রিড (Home, Away, Training) */
+        .category-section {
+            margin-bottom: 40px;
+        }
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            border-left: 5px solid #004b23;
+            padding-left: 10px;
+            text-transform: uppercase;
+        }
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .category-card {
+            height: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+        .category-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .category-card:hover img { transform: scale(1.1); }
+        .category-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.1));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 30px;
+            color: white;
+        }
+        .category-overlay h3 { font-size: 1.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .category-overlay p { font-size: 0.85rem; color: var(--accent-color); margin-top: 5px; font-weight: 600; }
+
+        /* 🛒 প্রোডাক্ট গ্রিড (কম্প্যাক্ট ও ক্রাঞ্চি) */
+        .jersey-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        .jersey-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .jersey-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 75, 35, 0.15);
+            border-color: #38b000;
+        }
+        .jersey-img-box {
+            width: 100%;
+            height: 200px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        .jersey-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .team-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #004b23;
+            color: #ffffff;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+        .jersey-title { font-size: 0.95rem; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+        
+        /* ⭐ কাস্টমার রিভিউ স্টার সেকশন */
+        .rating-stars { color: #ffb703; font-size: 0.8rem; margin-bottom: 6px; }
+        
+        .jersey-desc { color: #64748b; font-size: 0.75rem; height: 35px; overflow: hidden; margin-bottom: 10px; }
+        .specs-row { display: flex; gap: 8px; margin-bottom: 12px; font-size: 0.7rem; color: #64748b; }
+        .amount { font-size: 1.3rem; font-weight: 800; color: #2b9348; }
+        .stock-info { font-size: 0.65rem; color: #d00000; font-weight: 600; }
+        
+        .buy-btn {
+            background: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
+            color: white; border: none; width: 100%; padding: 8px 0; border-radius: 10px;
+            font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+            margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .buy-btn:hover { background: linear-gradient(135deg, #fb8500 0%, #ffb703 100%); }
+    </style>
+</head>
+<body>
+
+    <!-- 🟢 ১. নতুন ন্যাভিগেশন বার -->
+    <nav class="navbar">
+        <a href="#" class="nav-logo">🏆 Kit<span>Zone</span></a>
+        
+        <!-- সার্চ বার -->
+        <div class="search-container">
+            <input type="text" placeholder="Search your favorite jersey...">
+            <button><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        
+        <!-- অ্যাকশন বাটন এবং কার্ট আইকন -->
+        <div class="nav-actions">
+            <div class="cart-icon">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span class="cart-badge">0</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 📸 ২. উপরের বড় ব্যানার -->
+    <div class="hero-banner">
+        <div>
+            <h2>🔥 2026 World Cup Live Stock 🔥</h2>
+            <p style="font-size: 1.1rem; margin-top: 5px;">Get Your Custom Premium Kits Right Now</p>
+        </div>
+    </div>
+
+    <div class="container">
+        
+        <!-- 🧱 ৩. ক্যাটাগরি কালেকশন সেকশন (তোমার স্ক্রিনশটের মতো) -->
+        <div class="category-section">
+            <div class="category-title">Explore Collections</div>
+            <div class="category-grid">
+                <!-- Home Kit Card -->
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=600&q=80" alt="Home Kit">
+                    <div class="category-overlay">
+                        <h3>Home Kit</h3>
+                        <p>Official Stadium Kits &rarr;</p>
+                    </div>
+                </div>
+                <!-- Away Kit Card -->
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=600&q=80" alt="Away Kit">
+                    <div class="category-overlay">
+                        <h3>Away Kit</h3>
+                        <p>Alternative Legends &rarr;</p>
+                    </div>
+                </div>
+                <!-- Training Kit Card -->
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=600&q=80" alt="Training Kit">
+                    <div class="category-overlay">
+                        <h3>Training Kit</h3>
+                        <p>Sleek & Comfortable &rarr;</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🛒 প্রোডাক্ট লিস্ট সেকশন -->
+        <div class="category-title">Trending Jerseys</div>
+        <div class="jersey-grid">
+            {% for jersey in jerseys %}
+            <div class="jersey-card">
+                <span class="team-badge">{{ jersey.team_name }}</span>
+                <div class="jersey-img-box">
+                    {% if jersey.image_url %}
+                        <img src="{{ jersey.image_url }}" alt="{{ jersey.title }}">
+                    {% else %}
+                        <div style="height:100%; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-shirt" style="font-size: 3rem; color: #cbd5e1;"></i></div>
+                    {% endif %}
+                </div>
+
+                <div class="jersey-title">{{ jersey.title }}</div>
+                
+                <!-- ⭐ কাস্টমার রেটিং স্টার (ইউনিক লুকের জন্য) -->
+                <div class="rating-stars">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <span style="color:#64748b; font-size:0.7rem;">(5.0)</span>
+                </div>
+
+                <div class="jersey-desc">{{ jersey.description }}</div>
+                
+                <div class="specs-row">
+                    <span><b>Size:</b> {{ jersey.size }}</span> | 
+                    <span><b>Edition:</b> {{ jersey.version }}</span>
+                </div>
+                
+                <div style="margin-top: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                        <span class="amount">৳{{ jersey.price }}</span>
+                        <span class="stock-info">Only {{ jersey.stock }} Left!</span>
+                    </div>
+                    <!-- 'Add to Cart' বাটন ভাইব -->
+                    <button class="buy-btn">
+                        <i class="fa-solid fa-cart-plus"></i> Add To Cart
+                    </button>
+                </div>
+            </div>
+            {% empty %}
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;">No jerseys found.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>

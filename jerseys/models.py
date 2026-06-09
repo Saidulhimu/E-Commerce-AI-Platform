@@ -15,7 +15,9 @@ class Jersey(models.Model):
     # size ans custom option
     size = models.CharField(max_length=10)        # S, M, L, XL, XXL
     has_custom_name = models.BooleanField(default=False) # নাম-নাম্বার প্রিন্ট করার সুবিধা
-    
+  
+  
+    image_url = models.URLField(max_length=500, blank=True, null=True)  
     # Tracking and time
     created_at = models.DateTimeField(auto_now_add=True)
 
