@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ jersey.title }} | KitZone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary-color: #004b23; --accent-color: #ffb703; --text-dark: #1e293b; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background: #f8fafc; color: var(--text-dark); padding-bottom: 50px; }
+        
+        .navbar { background: #004b23; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { color: #fff; font-size: 1.5rem; font-weight: 800; text-decoration: none; }
+        .nav-logo span { color: var(--accent-color); }
+        .back-btn { color: white; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 15px; }
+        
+        .product-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .product-image img { width: 100%; height: auto; max-height: 450px; object-fit: cover; border-radius: 12px; }
+        
+        .product-details h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; }
+        .badge { background: var(--primary-color); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-block; margin-bottom: 15px; }
+        .price { font-size: 1.8rem; font-weight: 800; color: #2b9348; margin-bottom: 15px; }
+        .desc { color: #64748b; font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px; }
+        
+        .size-select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-weight: 600; margin-bottom: 20px; }
+        .action-btn { background: linear-gradient(135deg, #ffb703 0%, #fb8500 100%); color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+
+        .review-section { margin-top: 50px; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .review-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
+        
+        .review-card { padding: 15px 0; border-bottom: 1px solid #f1f5f9; }
+        .review-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .customer-name { font-weight: 700; font-size: 0.95rem; }
+        .stars { color: var(--accent-color); font-size: 0.85rem; }
+        .review-comment { color: #475569; font-size: 0.9rem; }
+
+        .review-form { margin-top: 30px; background: #f8fafc; padding: 20px; border-radius: 12px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; }
+        .form-control { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; outline: none; }
+        .submit-review-btn { background: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="nav-logo">🏆 Kit<span>Zone</span></a>
+        <a href="/" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Shop</a>
+    </nav>
+
+    <div class="container">
+        <div class="product-container">
+            <div class="product-image">
+                <img src="{{ jersey.image_url }}" alt="{{ jersey.title }}">
+            </div>
+            <div class="product-details">
+                <span class="badge">{{ jersey.team_name }}</span>
+                <h1>{{ jersey.title }}</h1>
+                
+                <div class="stars" style="margin-bottom: 15px;">
+                    <i class="fa-solid fa-star"></i> <strong>{{ avg_rating }}</strong> ({{ reviews.count }} Reviews)
+                </div>
+
+                <div class="price">৳{{ jersey.price }}</div>
+                <p class="desc">{{ jersey.description }}</p>
+                
+                <label style="font-size: 0.8rem; font-weight: 700; color: #475569;">SELECT SIZE:</label>
+                <select class="size-select">
+                    {% for size_obj in jersey.sizes.all %}
+                        <option>Size {{ size_obj.size }} ({{ size_obj.stock }} pieces left)</option>
+                    {% empty %}
+                        <option>Out of Stock</option>
+                    {% endfor %}
+                </select>
+
+                <button class="action-btn"><i class="fa-solid fa-bag-shopping"></i> Add to Bag</button>
+            </div>
+        </div>
+
+        <div class="review-section">
+            <div class="review-title">Customer Reviews ({{ reviews.count }})</div>
+            
+            {% for review in reviews %}
+            <div class="review-card">
+                <div class="review-header">
+                    <span class="customer-name">{{ review.customer_name }}</span>
+                    <span class="stars">
+                        {% if review.rating == 5 %}⭐⭐⭐⭐⭐
+                        {% elif review.rating == 4 %}⭐⭐⭐⭐
+                        {% elif review.rating == 3 %}⭐⭐⭐
+                        {% elif review.rating == 2 %}⭐⭐
+                        {% else %}⭐{% endif %}
+                    </span>
+                </div>
+                <p class="review-comment">{{ review.comment }}</p>
+                <small style="color: #94a3b8; font-size: 0.75rem;">{{ review.created_at|date:"F d, Y" }}</small>
+            </div>
+            {% empty %}
+            <p style="color: #64748b; padding: 15px 0;">No reviews yet. Be the first to share your opinion!</p>
+            {% endfor %}
+
+            <div class="review-form">
+                <h3>Share Your Opinion</h3>
+                <form method="POST" style="margin-top: 15px;">
+                    {% csrf_token %} <div class="form-group">
+                        <label>Your Name</label>
+                        <input type="text" name="customer_name" class="form-control" required placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label>Rating</label>
+                        <select name="rating" class="form-control" required>
+                            <option value="5">5 Stars ⭐⭐⭐⭐⭐</option>
+                            <option value="4">4 Stars ⭐⭐⭐⭐</option>
+                            <option value="3">3 Stars ⭐⭐⭐</option>
+                            <option value="2">2 Stars ⭐⭐</option>
+                            <option value="1">1 Star ⭐</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Comment</label>
+                        <textarea name="comment" class="form-control" rows="4" required placeholder="Write your review here..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-review-btn">Submit Review</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
