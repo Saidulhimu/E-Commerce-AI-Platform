@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | KitZone Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #070a13;
+            --card-bg: rgba(13, 20, 38, 0.45);
+            --accent-gold: #ffb703;
+            --accent-orange: #fb8500;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        
+        body {
+            background: radial-gradient(circle at 50% 50%, #0f1c3f 0%, #050814 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .auth-container {
+            display: flex;
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+            width: 100%;
+            max-width: 900px;
+            min-height: 600px;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8), 0 0 60px rgba(253, 133, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .auth-visual {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(5, 8, 20, 0.92) 0%, rgba(15, 23, 42, 0.65) 100%),
+                        url('https://images.unsplash.com/photo-1551958219-acbc608c6377?auto=format&fit=crop&w=800&q=80') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .auth-visual { display: none; }
+            .auth-container { max-width: 450px; }
+        }
+
+        .jersey-badge-stack {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .jersey-icon-glow {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 183, 3, 0.4);
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            box-shadow: 0 0 20px rgba(255, 183, 3, 0.2);
+            animation: float 4s ease-in-out infinite alternate;
+        }
+
+        .jersey-icon-glow:nth-child(2) {
+            color: #00e5ff;
+            border-color: rgba(0, 229, 255, 0.4);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+            animation-delay: 1s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-10px); }
+        }
+
+        .visual-title { font-size: 1.8rem; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 12px; line-height: 1.3; }
+        .visual-title span { color: var(--accent-gold); }
+        .visual-subtitle { color: #94a3b8; font-size: 0.9rem; max-width: 290px; font-weight: 400; line-height: 1.5; }
+
+        .auth-form-side {
+            flex: 1;
+            padding: 40px 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .pro-badge {
+            background: rgba(255, 183, 3, 0.08);
+            color: var(--accent-gold);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            align-self: center;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 183, 3, 0.25);
+        }
+
+        .brand-logo { font-size: 2.4rem; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; text-align: center; }
+        .brand-logo span { color: var(--accent-gold); text-shadow: 0 0 20px rgba(255, 183, 3, 0.4); }
+        .subtitle { color: #64748b; font-size: 0.85rem; margin-bottom: 25px; text-align: center; }
+        
+        .alert-messages {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            list-style: none;
+        }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { font-size: 0.75rem; font-weight: 600; color: #94a3b8; display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .form-group i.input-icon { position: absolute; left: 18px; color: #475569; font-size: 1.05rem; pointer-events: none; transition: color 0.3s; }
+        
+        .form-group input {
+            width: 100%;
+            background: rgba(7, 10, 19, 0.6) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px 50px 12px 52px;
+            border-radius: 14px;
+            color: white !important;
+            outline: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus { 
+            border-color: var(--accent-gold); 
+            box-shadow: 0 0 20px rgba(255, 183, 3, 0.15);
+            background: rgba(7, 10, 19, 0.85) !important;
+        }
+
+        .form-group input:focus ~ i.input-icon { color: var(--accent-gold); }
+        
+        .toggle-password {
+            position: absolute;
+            right: 18px;
+            color: #475569;
+            cursor: pointer;
+            padding: 5px;
+            font-size: 1.05rem;
+        }
+        .toggle-password:hover { color: var(--accent-gold); }
+
+        input:-webkit-autofill {
+            -webkit-text-fill-color: #ffffff !important;
+            transition: background-color 5000s ease-in-out 0s;
+            box-shadow: inset 0 0 0px 9999px #070a13 !important;
+        }
+        
+        .login-btn {
+            background: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
+            color: white; border: none; width: 100%; padding: 14px; border-radius: 14px;
+            font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s;
+            margin-top: 10px; box-shadow: 0 6px 25px rgba(251, 133, 0, 0.25);
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .login-btn:hover { 
+            background: linear-gradient(135deg, #fb8500 0%, #ffb703 100%); 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(251, 133, 0, 0.4);
+        }
+        
+        .switch-auth { margin-top: 25px; font-size: 0.85rem; color: #64748b; text-align: center; }
+        .switch-auth a { color: var(--accent-gold); text-decoration: none; font-weight: 600; }
+        .switch-auth a:hover { color: var(--accent-orange); text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        
+        <div class="auth-visual">
+            <div class="jersey-badge-stack">
+                <div class="jersey-icon-glow"><i class="fa-solid fa-shirt"></i></div>
+                <div class="jersey-icon-glow"><i class="fa-solid fa-circle-nodes"></i></div>
+            </div>
+            <h2 class="visual-title">Premium Football & <span>World Cup Kits</span></h2>
+            <p class="visual-subtitle">Join the squad today and start building your ultimate collection.</p>
+        </div>
+
+        <div class="auth-form-side">
+            <span class="pro-badge"><i class="fa-solid fa-user-plus"></i> Create New Account</span>
+            
+            <div class="brand-logo">🏆 Kit<span>Zone</span></div>
+            <div class="subtitle">Unlock the premium with world-class kits</div>
+            
+            {% if messages %}
+                <ul class="alert-messages">
+                    {% for message in messages %}
+                        <li><i class="fa-solid fa-circle-exclamation"></i> {{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-wrapper">
+                        <input type="text" name="username" placeholder="Choose a unique username" required id="id_username">
+                        <i class="fa-solid fa-user input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="input-wrapper">
+                        <input type="email" name="email" placeholder="Enter your email" required id="id_email">
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" name="password" placeholder="••••••••" required id="id_password">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <i class="fa-solid fa-eye-slash toggle-password" id="togglePassword"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" name="confirm_password" placeholder="••••••••" required id="id_confirm_password">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <i class="fa-solid fa-eye-slash toggle-password" id="toggleConfirmPassword"></i>
+                    </div>
+                </div>
+                
+                <button type="submit" class="login-btn">Register Now</button>
+            </form>
+            
+            <div class="switch-auth">
+                Already part of the squad? <a href="{% url 'login' %}">Log In</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function setupPasswordToggle(toggleId, inputId) {
+            const toggle = document.querySelector(toggleId);
+            const input = document.querySelector(inputId);
+            toggle.addEventListener('click', function () {
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        }
+        setupPasswordToggle('#togglePassword', '#id_password');
+        setupPasswordToggle('#toggleConfirmPassword', '#id_confirm_password');
+    </script>
+</body>
+</html>

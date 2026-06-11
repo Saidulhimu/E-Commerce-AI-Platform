@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}🏆 KitZone 2026{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Poppins', sans-serif; 
+        }
+        
+        /* মেইন প্রিমিয়াম নেভিগেশন বার */
+        .navbar-custom {
+            background: #004b23;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 75, 35, 0.3);
+            border-bottom: 3px solid #ffb703;
+        }
+        
+        .nav-logo {
+            color: #fff;
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        .nav-logo span { color: #ffb703; }
+        .nav-logo:hover { color: #fff; }
+
+        .search-container {
+            position: relative;
+            width: 40%;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ffb703;
+            border: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+        }
+
+        .nav-user-zone {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .user-badge {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffb703;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+        .logout-btn {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .logout-btn:hover { color: #ffb703; }
+
+        .cart-icon-wrapper {
+            position: relative;
+            color: white;
+            font-size: 1.3rem;
+            text-decoration: none;
+        }
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar-custom">
+        <a href="{% url 'jersey_list' %}" class="nav-logo">🏆 Kit<span>Zone</span></a>
+        
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search your favorite World Cup jersey...">
+            <button class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+
+        <div class="nav-user-zone">
+            {% if user.is_authenticated %}
+                <a href="#" class="user-badge"><i class="fa-solid fa-user me-1"></i> Hi, {{ user.username }}</a>
+                <a href="{% url 'logout' %}" class="logout-btn"><i class="fa-solid fa-right-from-bracket me-1"></i> Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="user-badge">Login</a>
+            {% endif %}
+            
+            <a href="{% url 'cart_detail' %}" class="cart-icon-wrapper">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span class="cart-badge">0</span>
+            </a>
+        </div>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

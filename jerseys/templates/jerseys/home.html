@@ -14,12 +14,13 @@
             --accent-glow: #fb8500;
             --card-bg: rgba(255, 255, 255, 0.96);
             --text-dark: #1e293b;
+            --text-muted: #64748b;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
 
         body {
-            background: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.45)), 
+            background: linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.4)), 
                         url('https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
             background-size: cover;
             color: var(--text-dark);
@@ -30,62 +31,113 @@
         /* Navbar styles */
         .navbar {
             background: #004b23;
-            padding: 15px 30px;
+            padding: 12px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0, 75, 35, 0.3);
-            border-bottom: 3px solid var(--accent-color);
+            box-shadow: 0 4px 25px rgba(0, 75, 35, 0.35);
+            border-bottom: 4px solid var(--accent-color);
         }
         .nav-logo {
             color: #fff;
-            font-size: 1.6rem;
+            font-size: 1.7rem;
             font-weight: 800;
             text-transform: uppercase;
             text-decoration: none;
             letter-spacing: 1px;
         }
-        .nav-logo span { color: var(--accent-color); text-shadow: 0 0 10px rgba(255, 183, 3, 0.5); }
+        .nav-logo span { color: var(--accent-color); text-shadow: 0 0 10px rgba(255, 183, 3, 0.4); }
         
+        /* Catchy Glowing Search Container */
         .search-container {
-            flex: 0 1 450px;
+            flex: 0 1 480px;
             position: relative;
             margin: 0 20px;
         }
         .search-container input {
             width: 100%;
-            padding: 11px 20px;
+            padding: 12px 24px;
             border-radius: 30px;
             border: 2px solid transparent;
             outline: none;
             font-size: 0.9rem;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
         }
         .search-container input:focus {
             border-color: var(--accent-color);
-            box-shadow: 0 0 10px rgba(255, 183, 3, 0.2);
+            box-shadow: 0 0 15px rgba(255, 183, 3, 0.4);
         }
         .search-container button {
             position: absolute;
-            right: 6px;
-            top: 5px;
+            right: 5px;
+            top: 4px;
             background: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
             border: none;
-            padding: 7px 18px;
-            border-radius: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             cursor: pointer;
             color: white;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .search-container button:hover {
+            transform: scale(1.05);
         }
         
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 25px;
         }
+
+        /* Polished User Badge */
+        .user-welcome {
+            color: var(--accent-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 183, 3, 0.12);
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 183, 3, 0.3);
+            text-transform: capitalize;
+        }
+        .logout-btn {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .logout-btn:hover { color: #fca5a5; }
+
+        .login-btn-nav {
+            background: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
+            color: white;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        .login-btn-nav:hover {
+            box-shadow: 0 4px 12px rgba(251, 133, 0, 0.3);
+        }
+
         .cart-icon {
             color: #fff;
             font-size: 1.4rem;
@@ -107,7 +159,7 @@
             box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
         }
 
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 15px; }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 15px; }
 
         /* Premium World Cup Hero Banner */
         .wc-hero-banner {
@@ -130,7 +182,7 @@
         .category-title {
             font-size: 1.4rem;
             font-weight: 800;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             border-left: 5px solid #004b23;
             padding-left: 12px;
             text-transform: uppercase;
@@ -138,6 +190,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            letter-spacing: 0.5px;
         }
         .category-grid {
             display: grid;
@@ -175,131 +228,161 @@
         .category-overlay h3 { font-size: 1.4rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
         .category-overlay p { font-size: 0.85rem; color: var(--accent-color); margin-top: 4px; font-weight: 600; }
 
-        /* Product Grid Card Styles */
+        /* Product Grid Card Styles with Ellipsis Fixes */
         .jersey-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 30px;
         }
         .jersey-card {
             background: var(--card-bg);
-            border: 1px solid rgba(0, 75, 35, 0.08);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 20px;
-            padding: 18px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .jersey-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 28px rgba(251, 133, 0, 0.18);
-            border-color: var(--accent-glow);
+            transform: translateY(-8px);
+            box-shadow: 0 16px 35px rgba(0, 75, 35, 0.15);
+            border-color: rgba(251, 133, 0, 0.4);
         }
         .jersey-img-box {
             width: 100%;
-            height: 230px;
+            height: 240px;
             background: #f8fafc;
             border-radius: 14px;
-            margin-bottom: 14px;
+            margin-bottom: 15px;
             overflow: hidden;
             border: 1px solid rgba(0,0,0,0.02);
         }
-        .jersey-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .jersey-img-box img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+        .jersey-card:hover .jersey-img-box img { transform: scale(1.06); }
         
         .team-badge {
             position: absolute;
-            top: 28px;
-            left: 28px;
-            background: #004b23;
+            top: 30px;
+            left: 30px;
+            background: var(--primary-color);
             color: #ffffff;
-            padding: 4px 12px;
+            padding: 4px 14px;
             border-radius: 20px;
-            font-size: 0.68rem;
+            font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
             z-index: 5;
             box-shadow: 0 4px 10px rgba(0, 75, 35, 0.2);
             border: 1px solid rgba(255,255,255,0.2);
         }
-        .jersey-title { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-bottom: 5px; line-height: 1.3; }
-        
-        .rating-stars { color: #ffb703; font-size: 0.85rem; margin-bottom: 10px; }
-        .jersey-desc { color: #64748b; font-size: 0.8rem; height: 44px; overflow: hidden; margin-bottom: 14px; line-height: 1.4; }
-        
-        /* Select Selectors Group Layout */
-        .selectors-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 16px;
+
+        /* Fixed Title Multi-line Ellipsis */
+        .jersey-title { 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            color: #0f172a; 
+            margin-bottom: 6px; 
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;  
+            overflow: hidden;
+            height: 48px; /* Standardized height across all grids */
         }
-        .selector-item label { font-size: 0.72rem; font-weight: 800; color: #475569; display: block; margin-bottom: 5px; letter-spacing: 0.5px; }
         
-        .size-select {
-            width: 100%;
-            padding: 7px 10px;
-            border-radius: 10px;
-            border: 1px solid #cbd5e1;
-            font-size: 0.8rem;
+        .rating-stars { color: #ffb703; font-size: 0.85rem; margin-bottom: 8px; }
+
+        /* Fixed Description Multi-line Ellipsis */
+        .jersey-desc { 
+            color: #64748b; 
+            font-size: 0.82rem; 
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;  
+            overflow: hidden;
+            height: 38px; /* Standardized description height */
+            margin-bottom: 16px; 
+        }
+        
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            margin-bottom: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(0, 0, 0, 0.06);
+        }
+        .amount { font-size: 1.4rem; font-weight: 800; color: #2b9348; }
+        
+        .stock-badge {
+            font-size: 0.75rem;
+            padding: 5px 12px;
+            border-radius: 20px;
             font-weight: 600;
-            outline: none;
-            background: #fff;
-            height: 38px;
+        }
+        .in-stock-badge {
+            background: rgba(43, 147, 72, 0.1);
+            color: #2b9348;
+        }
+        .out-of-stock-badge {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        
+        .details-btn {
+            background: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
+            color: white; 
+            border: none; 
+            width: 100%; 
+            padding: 12px 0; 
+            border-radius: 12px;
+            font-weight: 700; 
+            font-size: 0.9rem; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(251, 133, 0, 0.2);
+        }
+        .details-btn:hover { 
+            background: linear-gradient(135deg, #fb8500 0%, #ffb703 100%); 
+            box-shadow: 0 6px 20px rgba(251, 133, 0, 0.4);
         }
 
-        /* New Professional Plus-Minus Quantity Selector CSS */
-        .qty-wrapper {
+        /* Toast Notifications */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: -400px;
+            background: #1e293b;
+            color: #ffffff;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+            border-right: 5px solid #ffb703;
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 9999;
             display: flex;
             align-items: center;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            overflow: hidden;
-            height: 38px;
-            background: #fff;
+            gap: 12px;
+            transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .qty-btn {
-            background: #f1f5f9;
-            border: none;
-            width: 32px;
-            height: 100%;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #334155;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .qty-btn:hover { background: #e2e8f0; }
-        .qty-input {
-            width: 100%;
-            text-align: center;
-            border: none;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #0f172a;
-            outline: none;
-            -moz-appearance: textfield;
-        }
-        .qty-input::-webkit-outer-spin-button, .qty-input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        .amount { font-size: 1.35rem; font-weight: 800; color: #2b9348; }
-        .stock-info { font-size: 0.7rem; color: #d00000; font-weight: 600; }
-        
-        .buy-btn {
-            background: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
-            color: white; border: none; width: 100%; padding: 11px 0; border-radius: 12px;
-            font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s;
-            margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;
-            box-shadow: 0 4px 12px rgba(251, 133, 0, 0.2);
-        }
-        .buy-btn:hover { 
-            background: linear-gradient(135deg, #fb8500 0%, #ffb703 100%); 
-            box-shadow: 0 6px 15px rgba(251, 133, 0, 0.35);
-        }
+        .toast-notification.show { right: 30px; }
+        .toast-error { background: #1e1b4b; border-right: 5px solid #ef4444; }
     </style>
 </head>
 <body>
@@ -315,9 +398,16 @@
         </div>
 
         <div class="nav-actions">
+            {% if user.is_authenticated %}
+                <span class="user-welcome"><i class="fa-solid fa-user-check"></i> Hi, {{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="login-btn-nav"><i class="fa-solid fa-arrow-right-to-bracket"></i> Login</a>
+            {% endif %}
+
             <a href="{% url 'cart_detail' %}" class="cart-icon" style="text-decoration: none;">
                 <i class="fa-solid fa-bag-shopping"></i>
-                <span class="cart-badge">0</span>
+                <span class="cart-badge">{{ cart_total_items|default:"0" }}</span>
             </a>
         </div>
     </nav>
@@ -399,37 +489,18 @@
 
                 <div class="jersey-desc">{{ jersey.description }}</div>
                 
-                <div class="selectors-container">
-                    <div class="selector-item">
-                        <label>SELECT SIZE:</label>
-                        <select class="size-select">
-                            {% for size_obj in jersey.sizes.all %}
-                                <option value="{{ size_obj.size }}">Size {{ size_obj.size }}</option>
-                            {% empty %}
-                                <option>Stock Out</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    
-                    <div class="selector-item">
-                        <label>QUANTITY:</label>
-                        <div class="qty-wrapper">
-                            <button type="button" class="qty-btn minus-btn">-</button>
-                            <input type="number" class="qty-input" value="1" min="1" readonly>
-                            <button type="button" class="qty-btn plus-btn">+</button>
-                        </div>
-                    </div>
+                <div class="price-row">
+                    <span class="amount">৳{{ jersey.price }}</span>
+                    {% if jersey.total_stock > 0 %}
+                        <span class="stock-badge in-stock-badge"><i class="fa-solid fa-circle-check"></i> In Stock</span>
+                    {% else %}
+                        <span class="stock-badge out-of-stock-badge"><i class="fa-solid fa-circle-xmark"></i> Stock Out</span>
+                    {% endif %}
                 </div>
-                
-                <div style="margin-top: auto;">
-                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                        <span class="amount">৳{{ jersey.price }}</span>
-                        <span class="stock-info">In Stock: {{ jersey.total_stock }}</span>
-                    </div>
-                    <button class="buy-btn" data-id="{{ jersey.id }}">
-                        <i class="fa-solid fa-cart-plus"></i> Add To Cart
-                    </button>
-                </div>
+
+                <a href="{% url 'jersey_detail' jersey.id %}" class="details-btn">
+                    <i class="fa-solid fa-circle-info"></i> View Details
+                </a>
             </div>
             {% empty %}
             <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b; font-weight: 600;">No jerseys found matching your criteria.</div>
@@ -438,81 +509,27 @@
     </div>
 
     <script>
-        // Real-time Quantity Selector Controls (Plus/Minus Action)
-        document.querySelectorAll('.jersey-card').forEach(card => {
-            const minusBtn = card.querySelector('.minus-btn');
-            const plusBtn = card.querySelector('.plus-btn');
-            const qtyInput = card.querySelector('.qty-input');
+        // Custom Luxury Toast Notification JavaScript Function
+        function showToast(message, isError = false) {
+            const oldToast = document.querySelector('.toast-notification');
+            if (oldToast) oldToast.remove();
 
-            if (minusBtn && plusBtn && qtyInput) {
-                minusBtn.addEventListener('click', () => {
-                    let currentVal = parseInt(qtyInput.value);
-                    if (currentVal > 1) {
-                        qtyInput.value = currentVal - 1;
-                    }
-                });
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${isError ? 'toast-error' : ''}`;
+            
+            const icon = isError ? 'fa-circle-xmark' : 'fa-circle-check';
+            const iconColor = isError ? '#ef4444' : '#ffb703';
+            
+            toast.innerHTML = `<i class="fa-solid ${icon}" style="color: ${iconColor}; font-size: 1.15rem;"></i> <span>${message}</span>`;
+            document.body.appendChild(toast);
 
-                plusBtn.addEventListener('click', () => {
-                    let currentVal = parseInt(qtyInput.value);
-                    qtyInput.value = currentVal + 1;
-                });
-            }
-        });
+            setTimeout(() => toast.classList.add('show'), 100);
 
-        // Add To Cart AJAX Request Handling
-        document.querySelectorAll('.buy-btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const card = this.closest('.jersey-card');
-                const jerseyId = this.getAttribute('data-id');
-                const sizeSelect = card.querySelector('.size-select');
-                const selectedSize = sizeSelect ? sizeSelect.value : null;
-                
-                // Card er corresponding quantity take collect kora
-                const qtyInput = card.querySelector('.qty-input');
-                const selectedQty = qtyInput ? parseInt(qtyInput.value) : 1;
-
-                if (!selectedSize || selectedSize === 'Stock Out') {
-                    alert('Please select a valid size!');
-                    return;
-                }
-
-                // Django CSRF Token collection
-                const csrfToken = document.cookie.split('; ')
-                    .find(row => row.startsWith('csrftoken='))
-                    ?.split('=')[1];
-
-                // Backend endpoints e quantity shoho data pathano
-                fetch('/add-to-cart/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrfToken
-                    },
-                    body: JSON.stringify({
-                        jersey_id: jerseyId,
-                        size: selectedSize,
-                        quantity: selectedQty // Send quantity data here
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        document.querySelector('.cart-badge').innerText = data.total_items;
-                        alert(data.message);
-                        // Reset quantity input to 1 after successfully adding to cart
-                        if(qtyInput) qtyInput.value = 1;
-                    } else {
-                        alert('Error: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Something went wrong. Please try again.');
-                });
-            });
-        });
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
     </script>
 </body>
 </html>

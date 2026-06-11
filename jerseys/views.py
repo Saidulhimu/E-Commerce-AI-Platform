@@ -1,22 +1,76 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Q  
-# 🟢 নিচে Cart এবং CartItem ইমপোর্ট করা হলো
-from .models import Jersey, Review, Cart, CartItem 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.models import User
+from django.db.models import Q 
 from django.http import JsonResponse
-import json # 🟢 json টা ফাইলের ওপরে নিয়ে আসলাম (স্ট্যান্ডার্ড প্র্যাকটিস)
+from .models import Jersey, Review, Cart, CartItem 
+import json 
 
-# 1. Product list view with Category Filter & Search Engine
+# --- AUTHENTICATION VIEWS ---
+
+def register_view(request):
+    """Handle user registration with custom fields"""
+    if request.method == 'POST':
+        u_name = request.POST.get('username')
+        e_mail = request.POST.get('email')
+        pass_word = request.POST.get('password')
+        conf_pass = request.POST.get('confirm_password')
+
+        if pass_word != conf_pass:
+            messages.error(request, "Passwords do not match!")
+            return render(request, 'auth/register.html')
+
+        if User.objects.filter(username=u_name).exists():
+            messages.error(request, "Username already exists!")
+            return render(request, 'auth/register.html')
+            
+        user = User.objects.create_user(username=u_name, email=e_mail, password=pass_word)
+        user.save()
+        
+        # Automatically log in the user after successful registration
+        login(request, user)
+        messages.success(request, "Registration successful! Welcome to KitZone.")
+        return redirect('jersey_list')
+
+    return render(request, 'auth/register.html')
+
+
+def login_view(request):
+    """Handle user authentication and session creation"""
+    if request.method == 'POST':
+        u_name = request.POST.get('username')
+        pass_word = request.POST.get('password')
+        
+        user = authenticate(username=u_name, password=pass_word)
+        if user is not None:
+            login(request, user)
+            messages.success(request, f"Welcome back, {u_name}!")
+            return redirect('jersey_list')
+        else:
+            messages.error(request, "Invalid username or password.")
+            
+    return render(request, 'auth/login.html')
+
+
+def logout_view(request):
+    """Clear user session and log out"""
+    logout(request)
+    messages.success(request, "Logged out successfully.")
+    return redirect('jersey_list')
+
+
+# --- PRODUCT VIEWS ---
+
 def jersey_list(request):
+    """Display jerseys with optional category filtering and search functionality"""
     category_filter = request.GET.get('category')
     search_query = request.GET.get('search') 
-    
     jerseys = Jersey.objects.all()
     
-    # Category filtering logic
     if category_filter:
         jerseys = jerseys.filter(category=category_filter)
         
-    # Search engine logic 
     if search_query:
         jerseys = jerseys.filter(
             Q(title__icontains=search_query) | 
@@ -31,12 +85,10 @@ def jersey_list(request):
     return render(request, 'jerseys/home.html', context)
 
 
-# 2. Product detail view with dynamic review system
 def jersey_detail(request, pk):
-    # Fetch the specific jersey by id (primary key)
+    """Display single jersey details and handle dynamic review submissions"""
     jersey = get_object_or_404(Jersey, pk=pk)
     
-    # Handle customer review submission via POST request
     if request.method == 'POST':
         customer_name = request.POST.get('customer_name')
         rating = request.POST.get('rating')
@@ -51,13 +103,8 @@ def jersey_detail(request, pk):
             )
             return redirect('jersey_detail', pk=jersey.pk)
 
-    # Get all reviews for this specific jersey
     reviews = jersey.reviews.all().order_by('-created_at')
-    
-    # Calculate average rating dynamically
-    avg_rating = 0
-    if reviews.exists():
-        avg_rating = sum(r.rating for r in reviews) / reviews.count()
+    avg_rating = sum(r.rating for r in reviews) / reviews.count() if reviews.exists() else 0
 
     context = {
         'jersey': jersey,
@@ -67,8 +114,10 @@ def jersey_detail(request, pk):
     return render(request, 'jerseys/jersey_detail.html', context)
 
 
-# 3. Session helper function for Cart
+# --- CART SYSTEM HELPERS & VIEWS ---
+
 def _cart_id(request):
+    """Get or create a unique session key for guest carts"""
     cart = request.session.session_key
     if not cart:
         request.session.create()
@@ -76,36 +125,33 @@ def _cart_id(request):
     return cart
 
 
-# 4. Add to Cart Logic (AJAX Request)
 def add_to_cart(request):
+    """AJAX handler to add items/quantities to the cart"""
     if request.method == 'POST':
         data = json.loads(request.body)
         jersey_id = data.get('jersey_id')
         selected_size = data.get('size')
+        quantity = int(data.get('quantity', 1))
         
         if selected_size == 'Stock Out' or not selected_size:
             return JsonResponse({'status': 'error', 'message': 'Invalid size or out of stock'}, status=400)
             
         try:
             jersey = Jersey.objects.get(id=jersey_id)
-            
-            # 🟢 Get or Create Cart
             cart, created = Cart.objects.get_or_create(cart_id=_cart_id(request))
             
-            # 🟢 Get or Create Cart Item
             cart_item, item_created = CartItem.objects.get_or_create(
                 cart=cart,
                 jersey=jersey,
-                size=selected_size
+                size=selected_size,
+                defaults={'quantity': quantity}
             )
             
             if not item_created:
-                cart_item.quantity += 1
+                cart_item.quantity += quantity
                 cart_item.save()
                 
-            # Calculate total items in cart
             total_cart_items = sum(item.quantity for item in cart.items.all())
-            
             return JsonResponse({
                 'status': 'success',
                 'message': f'{jersey.title} added to cart!',
@@ -118,18 +164,18 @@ def add_to_cart(request):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 
-# Cart Details View
 def cart_detail(request):
+    """Render the shopping cart page with item subtotals"""
     cart_session = _cart_id(request)
     try:
-        # ইউজারের কার্ট এবং কার্টের ভেতরের সব আইটেম খুঁজে বের করা
         cart = Cart.objects.get(cart_id=cart_session)
         cart_items = CartItem.objects.filter(cart=cart)
         
-        # সব আইটেমের মোট দাম হিসাব করা
+        for item in cart_items:
+            item.sub_total = item.jersey.price * item.quantity
+            
         total_price = sum(item.jersey.price * item.quantity for item in cart_items)
     except Cart.DoesNotExist:
-        # যদি কার্টে কিছু না থাকে
         cart_items = []
         total_price = 0
         
@@ -138,3 +184,64 @@ def cart_detail(request):
         'total_price': total_price,
     }
     return render(request, 'jerseys/cart.html', context)
+
+
+def update_cart_item(request):
+    """AJAX handler to increase or decrease cart item quantity"""
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        item_id = data.get('item_id')
+        action = data.get('action')
+        
+        try:
+            cart_item = CartItem.objects.get(id=item_id)
+            
+            if action == 'increase':
+                cart_item.quantity += 1
+            elif action == 'decrease' and cart_item.quantity > 1:
+                cart_item.quantity -= 1
+                    
+            cart_item.save()
+            
+            item_subtotal = cart_item.jersey.price * cart_item.quantity
+            cart = cart_item.cart
+            total_price = sum(item.jersey.price * item.quantity for item in cart.items.all())
+            total_items = sum(item.quantity for item in cart.items.all())
+            
+            return JsonResponse({
+                'status': 'success',
+                'quantity': cart_item.quantity,
+                'item_subtotal': item_subtotal,
+                'total_price': total_price,
+                'total_items': total_items
+            })
+        except CartItem.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Item not found'}, status=404)
+            
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+
+
+def remove_from_cart(request):
+    """AJAX handler to delete an item entirely from the cart"""
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        item_id = data.get('item_id')
+        
+        try:
+            cart_item = CartItem.objects.get(id=item_id)
+            cart = cart_item.cart
+            cart_item.delete()
+            
+            total_price = sum(item.jersey.price * item.quantity for item in cart.items.all())
+            total_items = sum(item.quantity for item in cart.items.all())
+            
+            return JsonResponse({
+                'status': 'success',
+                'total_price': total_price,
+                'total_items': total_items,
+                'message': 'Item removed from cart'
+            })
+        except CartItem.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Item not found'}, status=404)
+            
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)

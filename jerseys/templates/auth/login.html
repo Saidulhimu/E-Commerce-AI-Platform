@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In | KitZone Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #070a13;
+            --card-bg: rgba(13, 20, 38, 0.45);
+            --accent-gold: #ffb703;
+            --accent-orange: #fb8500;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        
+        body {
+            /* নতুন প্রিমিয়াম গ্লোয়িং ফুটবল স্টেডিয়াম ও ম্যাচ ডে ভাইব ব্যাকগ্রাউন্ড */
+            background: linear-gradient(135deg, rgba(7, 10, 19, 0.9) 0%, rgba(15, 23, 42, 0.85) 100%),
+                        url('https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .auth-container {
+            display: flex;
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+            width: 100%;
+            max-width: 900px;
+            min-height: 550px;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8), 0 0 60px rgba(253, 133, 0, 0.05);
+            overflow: hidden;
+        }
+
+        /* ⚽ বাম পাশের জার্সি আর্ট সেকশন (নতুন ব্যাকগ্রাউন্ড থিমসহ) */
+        .auth-visual {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(5, 8, 20, 0.92) 0%, rgba(15, 23, 42, 0.65) 100%),
+                        url('https://images.unsplash.com/photo-1551958219-acbc608c6377?auto=format&fit=crop&w=800&q=80') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .auth-visual { display: none; }
+            .auth-container { max-width: 450px; }
+        }
+
+        /* তোমার পছন্দের সেই নিয়ন ডাবল জার্সি গ্লো আইকন জোড়া */
+        .jersey-badge-stack {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .jersey-icon-glow {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 183, 3, 0.4);
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            box-shadow: 0 0 20px rgba(255, 183, 3, 0.2);
+            animation: float 4s ease-in-out infinite alternate;
+        }
+
+        .jersey-icon-glow:nth-child(2) {
+            color: #00e5ff;
+            border-color: rgba(0, 229, 255, 0.4);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+            animation-delay: 1s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-10px); }
+        }
+
+        /* ক্লাব এবং ওয়ার্ল্ড কাপ উভয় জার্সিকে রিপ্রেজেন্ট করার মেইন টেক্সট */
+        .visual-title { font-size: 1.8rem; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 12px; line-height: 1.3; }
+        .visual-title span { color: var(--accent-gold); }
+        .visual-subtitle { color: #94a3b8; font-size: 0.9rem; max-width: 290px; font-weight: 400; line-height: 1.5; }
+
+        /* 🔐 ডান পাশের মেইন লগইন ফর্ম */
+        .auth-form-side {
+            flex: 1;
+            padding: 50px 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* "Secure Authentication" এর বদলে প্রফেশনাল গোল্ডেন ওয়েলকাম ব্যাজ */
+        .pro-badge {
+            background: rgba(255, 183, 3, 0.08);
+            color: var(--accent-gold);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            align-self: center;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 183, 3, 0.25);
+            box-shadow: 0 0 15px rgba(255, 183, 3, 0.05);
+        }
+
+        .brand-logo { font-size: 2.4rem; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; text-align: center; }
+        .brand-logo span { color: var(--accent-gold); text-shadow: 0 0 20px rgba(255, 183, 3, 0.4); }
+        .subtitle { color: #64748b; font-size: 0.85rem; margin-bottom: 35px; text-align: center; }
+        
+        .alert-messages {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 12px 16px;
+            border-radius: 14px;
+            font-size: 0.85rem;
+            margin-bottom: 25px;
+            list-style: none;
+        }
+
+        .form-group { margin-bottom: 24px; }
+        .form-group label { font-size: 0.75rem; font-weight: 600; color: #94a3b8; display: block; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .form-group i.input-icon { position: absolute; left: 18px; color: #475569; font-size: 1.05rem; pointer-events: none; transition: color 0.3s; }
+        
+        .form-group input {
+            width: 100%;
+            background: rgba(7, 10, 19, 0.6) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 15px 50px 15px 52px;
+            border-radius: 16px;
+            color: white !important;
+            outline: none;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .form-group input:focus { 
+            border-color: var(--accent-gold); 
+            box-shadow: 0 0 20px rgba(255, 183, 3, 0.15);
+            background: rgba(7, 10, 19, 0.85) !important;
+        }
+
+        .form-group input:focus ~ i.input-icon { color: var(--accent-gold); }
+        
+        /* 👁️ Show/Hide Password Eye Styling */
+        .toggle-password {
+            position: absolute;
+            right: 18px;
+            color: #475569;
+            cursor: pointer;
+            padding: 5px;
+            font-size: 1.05rem;
+            transition: color 0.2s;
+        }
+        .toggle-password:hover { color: var(--accent-gold); }
+
+        /* Autofill Overrides */
+        input:-webkit-autofill {
+            -webkit-text-fill-color: #ffffff !important;
+            transition: background-color 5000s ease-in-out 0s;
+            box-shadow: inset 0 0 0px 9999px #070a13 !important;
+        }
+        
+        /* ক্লিন এবং প্রফেশনাল লগইন বাটন */
+        .login-btn {
+            background: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
+            color: white; border: none; width: 100%; padding: 15px; border-radius: 16px;
+            font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s;
+            margin-top: 10px; box-shadow: 0 6px 25px rgba(251, 133, 0, 0.25);
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .login-btn:hover { 
+            background: linear-gradient(135deg, #fb8500 0%, #ffb703 100%); 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(251, 133, 0, 0.4);
+        }
+        
+        .switch-auth { margin-top: 30px; font-size: 0.85rem; color: #64748b; text-align: center; }
+        .switch-auth a { color: var(--accent-gold); text-decoration: none; font-weight: 600; }
+        .switch-auth a:hover { color: var(--accent-orange); text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        
+        <!-- বাম পাশের প্রফেশনাল অল-জার্সি ভিজ্যুয়াল এরিয়া -->
+        <div class="auth-visual">
+            <div class="jersey-badge-stack">
+                <div class="jersey-icon-glow"><i class="fa-solid fa-shirt"></i></div>
+                <div class="jersey-icon-glow"><i class="fa-solid fa-circle-nodes"></i></div>
+            </div>
+            <!-- ক্লাব ও ওয়ার্ল্ড কাপ দুইটাই কাভার করা টেক্সট -->
+            <h2 class="visual-title">Premium Football & <span>World Cup Kits</span></h2>
+            <p class="visual-subtitle">Explore the world's finest club editions and national team gear.</p>
+        </div>
+
+        <!-- ডান পাশের লগইন ফর্ম -->
+        <div class="auth-form-side">
+            <!-- তোমার রিকোয়েস্ট করা নতুন ওয়েলকাম ব্যাজ -->
+            <span class="pro-badge"><i class="fa-solid fa-hand-wave"></i> Welcome To KitZone</span>
+            
+            <div class="brand-logo">🏆 Kit<span>Zone</span></div>
+            <div class="subtitle">Please enter your verified credentials to continue</div>
+            
+            {% if messages %}
+                <ul class="alert-messages">
+                    {% for message in messages %}
+                        <li><i class="fa-solid fa-circle-exclamation"></i> {{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            
+            <form method="POST" autocomplete="on">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label>Username / Gmail</label>
+                    <div class="input-wrapper">
+                        <input type="text" name="username" placeholder="Enter your username" required id="id_username">
+                        <i class="fa-solid fa-user input-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" name="password" placeholder="••••••••" required id="id_password">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <i class="fa-solid fa-eye-slash toggle-password" id="togglePassword"></i>
+                    </div>
+                </div>
+                
+                <!-- সলিড এবং স্ট্যান্ডার্ড লগইন বাটন -->
+                <button type="submit" class="login-btn">Log In</button>
+            </form>
+            
+            <div class="switch-auth">
+               Don't have an account yet? <a href="{% url 'register' %}">Register Now</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#id_password');
+
+        togglePassword.addEventListener('click', function () {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
+</body>
+</html>
