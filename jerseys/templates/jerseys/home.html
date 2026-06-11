@@ -203,7 +203,7 @@
             overflow: hidden;
             position: relative;
             cursor: pointer;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+            box-shadow: 0 6px 18 rgba(0,0,0,0.08);
             display: block;
             text-decoration: none;
             border: 1px solid rgba(255,255,255,0.2);
@@ -295,7 +295,7 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;  
             overflow: hidden;
-            height: 48px; /* Standardized height across all grids */
+            height: 48px;
         }
         
         .rating-stars { color: #ffb703; font-size: 0.85rem; margin-bottom: 8px; }
@@ -309,7 +309,7 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;  
             overflow: hidden;
-            height: 38px; /* Standardized description height */
+            height: 38px;
             margin-bottom: 16px; 
         }
         
@@ -407,7 +407,7 @@
 
             <a href="{% url 'cart_detail' %}" class="cart-icon" style="text-decoration: none;">
                 <i class="fa-solid fa-bag-shopping"></i>
-                <span class="cart-badge">{{ cart_total_items|default:"0" }}</span>
+                <span class="cart-badge" id="nav-cart-badge">{{ total_items }}</span>
             </a>
         </div>
     </nav>
@@ -450,10 +450,11 @@
             <span>
                 {% if search_query %}
                     Search Results for "{{ search_query }}"
-                {% elif selected_category %}
+                {% if selected_category %}
                     {{ selected_category|upper }} KITS
                 {% else %}
                     TRENDING JERSEYS
+                {% endif %}
                 {% endif %}
             </span>
             <a href="{% url 'jersey_list' %}" style="font-size: 0.85rem; color: #004b23; text-transform: none; font-weight: 600;">Show All</a>
@@ -506,9 +507,7 @@
             <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b; font-weight: 600;">No jerseys found matching your criteria.</div>
             {% endfor %}
         </div>
-    </div>
-
-    <script>
+    </div> <script>
         // Custom Luxury Toast Notification JavaScript Function
         function showToast(message, isError = false) {
             const oldToast = document.querySelector('.toast-notification');
@@ -530,6 +529,13 @@
                 setTimeout(() => toast.remove(), 400);
             }, 3000);
         }
+
+        // Django Messages-কে ব্রাউজারে টোস্ট নোটিফিকেশন হিসেবে শো করা
+        {% if messages %}
+            {% for message in messages %}
+                showToast("{{ message }}", {% if message.tags == 'error' %}true{% else %}false{% endif %});
+            {% endfor %}
+        {% endif %}
     </script>
 </body>
 </html>

@@ -69,18 +69,30 @@ def jersey_list(request):
     jerseys = Jersey.objects.all()
     
     if category_filter:
-        jerseys = jerseys.filter(category=category_filter)
+        category_filter = category_filter.strip()
+        jerseys = jerseys.filter(category__iexact=category_filter)
         
     if search_query:
+        search_query = search_query.strip()
         jerseys = jerseys.filter(
             Q(title__icontains=search_query) | 
             Q(team_name__icontains=search_query)
         )
         
+    # গ্লোবাল নেভবার কার্ট কাউন্টার সিঙ্ক করার জন্য লজিক
+    cart_session = _cart_id(request)
+    total_items = 0
+    try:
+        cart = Cart.objects.get(cart_id=cart_session)
+        total_items = sum(item.quantity for item in CartItem.objects.filter(cart=cart))
+    except Cart.DoesNotExist:
+        pass
+        
     context = {
         'jerseys': jerseys,
         'selected_category': category_filter, 
         'search_query': search_query,  
+        'total_items': total_items,
     }
     return render(request, 'jerseys/home.html', context)
 
@@ -106,10 +118,20 @@ def jersey_detail(request, pk):
     reviews = jersey.reviews.all().order_by('-created_at')
     avg_rating = sum(r.rating for r in reviews) / reviews.count() if reviews.exists() else 0
 
+    # ডিটেইলস পেজেও নেভবার কাউন্টার সিঙ্ক রাখার ব্যবস্থা
+    cart_session = _cart_id(request)
+    total_items = 0
+    try:
+        cart = Cart.objects.get(cart_id=cart_session)
+        total_items = sum(item.quantity for item in CartItem.objects.filter(cart=cart))
+    except Cart.DoesNotExist:
+        pass
+
     context = {
         'jersey': jersey,
         'reviews': reviews,
         'avg_rating': round(avg_rating, 1),
+        'total_items': total_items,
     }
     return render(request, 'jerseys/jersey_detail.html', context)
 
@@ -117,26 +139,29 @@ def jersey_detail(request, pk):
 # --- CART SYSTEM HELPERS & VIEWS ---
 
 def _cart_id(request):
-    """Get or create a unique session key for guest carts"""
-    cart = request.session.session_key
-    if not cart:
+    """Get or create a permanent unique session key for guest/user carts"""
+    if not request.session.session_key:
         request.session.create()
-        cart = request.session.session_key
-    return cart
+    
+    if 'cart_initialized' not in request.session:
+        request.session['cart_initialized'] = True
+        request.session.modified = True
+        
+    return request.session.session_key
 
 
 def add_to_cart(request):
-    """AJAX handler to add items/quantities to the cart"""
+    """AJAX handler to add items/quantities to the cart database permanently"""
     if request.method == 'POST':
-        data = json.loads(request.body)
-        jersey_id = data.get('jersey_id')
-        selected_size = data.get('size')
-        quantity = int(data.get('quantity', 1))
-        
-        if selected_size == 'Stock Out' or not selected_size:
-            return JsonResponse({'status': 'error', 'message': 'Invalid size or out of stock'}, status=400)
-            
         try:
+            data = json.loads(request.body)
+            jersey_id = data.get('jersey_id')
+            selected_size = data.get('size')
+            quantity = int(data.get('quantity', 1))
+            
+            if selected_size == 'Stock Out' or not selected_size:
+                return JsonResponse({'status': 'error', 'message': 'Invalid size or out of stock'}, status=400)
+                
             jersey = Jersey.objects.get(id=jersey_id)
             cart, created = Cart.objects.get_or_create(cart_id=_cart_id(request))
             
@@ -151,7 +176,8 @@ def add_to_cart(request):
                 cart_item.quantity += quantity
                 cart_item.save()
                 
-            total_cart_items = sum(item.quantity for item in cart.items.all())
+            total_cart_items = sum(item.quantity for item in CartItem.objects.filter(cart=cart))
+            
             return JsonResponse({
                 'status': 'success',
                 'message': f'{jersey.title} added to cart!',
@@ -160,12 +186,14 @@ def add_to_cart(request):
             
         except Jersey.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Jersey not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
             
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 
 def cart_detail(request):
-    """Render the shopping cart page with item subtotals"""
+    """Render the shopping cart page with dynamic tiered delivery fees"""
     cart_session = _cart_id(request)
     try:
         cart = Cart.objects.get(cart_id=cart_session)
@@ -179,22 +207,36 @@ def cart_detail(request):
         cart_items = []
         total_price = 0
         
+    total_items = sum(item.quantity for item in cart_items) if cart_items else 0
+    
+    # ডাইনামিক ডেলিভারি ফি লজিক (প্রতি আইটেমে ৩০ টাকা, সর্বোচ্চ ১৫০ টাকা লক)
+    if total_items > 0:
+        delivery_fee = min(total_items * 30, 150)
+    else:
+        delivery_fee = 0
+        
+    grand_total = total_price + delivery_fee
+        
     context = {
         'cart_items': cart_items,
         'total_price': total_price,
+        'total_items': total_items,
+        'delivery_fee': delivery_fee,
+        'grand_total': grand_total,
     }
     return render(request, 'jerseys/cart.html', context)
 
 
 def update_cart_item(request):
-    """AJAX handler to increase or decrease cart item quantity"""
+    """AJAX handler to increase/decrease quantity and return computed grand totals"""
     if request.method == 'POST':
-        data = json.loads(request.body)
-        item_id = data.get('item_id')
-        action = data.get('action')
-        
         try:
+            data = json.loads(request.body)
+            item_id = data.get('item_id')
+            action = data.get('action')
+            
             cart_item = CartItem.objects.get(id=item_id)
+            cart = cart_item.cart
             
             if action == 'increase':
                 cart_item.quantity += 1
@@ -204,44 +246,62 @@ def update_cart_item(request):
             cart_item.save()
             
             item_subtotal = cart_item.jersey.price * cart_item.quantity
-            cart = cart_item.cart
-            total_price = sum(item.jersey.price * item.quantity for item in cart.items.all())
-            total_items = sum(item.quantity for item in cart.items.all())
+            all_items = CartItem.objects.filter(cart=cart)
+            
+            total_price = sum(item.jersey.price * item.quantity for item in all_items)
+            total_items = sum(item.quantity for item in all_items)
+            
+            # AJAX রেসপন্সের জন্যও ডাইনামিক ডেলিভারি হিসাব
+            delivery_fee = min(total_items * 30, 150) if total_items > 0 else 0
+            grand_total = total_price + delivery_fee
             
             return JsonResponse({
                 'status': 'success',
                 'quantity': cart_item.quantity,
                 'item_subtotal': item_subtotal,
                 'total_price': total_price,
-                'total_items': total_items
+                'total_items': total_items,
+                'delivery_fee': delivery_fee,
+                'grand_total': grand_total
             })
         except CartItem.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Item not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
             
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
 
 def remove_from_cart(request):
-    """AJAX handler to delete an item entirely from the cart"""
+    """AJAX handler to completely remove an item from the cart database"""
     if request.method == 'POST':
-        data = json.loads(request.body)
-        item_id = data.get('item_id')
-        
         try:
+            data = json.loads(request.body)
+            item_id = data.get('item_id')
+            
             cart_item = CartItem.objects.get(id=item_id)
             cart = cart_item.cart
             cart_item.delete()
             
-            total_price = sum(item.jersey.price * item.quantity for item in cart.items.all())
-            total_items = sum(item.quantity for item in cart.items.all())
+            all_items = CartItem.objects.filter(cart=cart)
+            total_price = sum(item.jersey.price * item.quantity for item in all_items)
+            total_items = sum(item.quantity for item in all_items)
+            
+            # ডিলিট করার পর নতুন ডেলিভারি ও গ্র্যান্ড টোটাল
+            delivery_fee = min(total_items * 30, 150) if total_items > 0 else 0
+            grand_total = total_price + delivery_fee
             
             return JsonResponse({
                 'status': 'success',
                 'total_price': total_price,
                 'total_items': total_items,
+                'delivery_fee': delivery_fee,
+                'grand_total': grand_total,
                 'message': 'Item removed from cart'
             })
         except CartItem.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Item not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
             
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)

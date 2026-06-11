@@ -16,7 +16,7 @@
             font-family: 'Poppins', sans-serif; 
         }
         
-        /* মেইন প্রিমিয়াম নেভিগেশন বার */
+        /* মেইন প্রিমিয়াম নেভিগেশন বার */
         .navbar-custom {
             background: #004b23;
             padding: 15px 30px;
@@ -132,7 +132,7 @@
             
             <a href="{% url 'cart_detail' %}" class="cart-icon-wrapper">
                 <i class="fa-solid fa-bag-shopping"></i>
-                <span class="cart-badge">0</span>
+                <span id="nav-cart-badge" class="cart-badge">{{ total_items }}</span>
             </a>
         </div>
     </nav>

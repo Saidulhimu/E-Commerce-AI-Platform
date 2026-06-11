@@ -10,28 +10,29 @@
         --text-dark: #1e293b;
         --text-muted: #64748b;
         --danger-color: #ef4444;
+        --card-bg: rgba(255, 255, 255, 0.95);
     }
 
     body {
-        background: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.45)), 
+        background: linear-gradient(rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.5)), 
                     url('https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
         background-size: cover;
         min-height: 100vh;
     }
 
     .cart-container {
-        max-width: 1200px;
+        max-width: 1050px;
         margin: 40px auto;
         padding: 0 20px;
     }
 
     .page-title {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
         font-weight: 800;
         color: var(--primary-color);
-        margin-bottom: 30px;
+        margin-bottom: 25px;
         text-transform: uppercase;
-        border-left: 6px solid var(--primary-color);
+        border-left: 5px solid var(--primary-color);
         padding-left: 15px;
         letter-spacing: 0.5px;
     }
@@ -45,45 +46,85 @@
     }
 
     @media (max-width: 992px) {
-        .cart-wrapper { grid-template-columns: 1fr; }
+        .cart-wrapper { grid-template-columns: 1fr; gap: 20px; }
     }
 
     /* Glass-morphism Cards Framework */
     .glass-card {
-        background: rgba(255, 255, 255, 0.96);
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.6);
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.7);
         border-radius: 20px;
         padding: 25px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
+    .glass-card:hover {
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+    }
+
+    /* PREMIUM FADE OUT ANIMATION STRUCTURE */
     .cart-item-row {
         display: flex;
         align-items: center;
         padding: 20px 0;
-        border-bottom: 1px solid #e2e8f0;
-        transition: all 0.3s ease;
+        border-bottom: 1px solid #f1f5f9;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        max-height: 200px;
     }
     .cart-item-row:last-child { border-bottom: none; }
 
+    .cart-item-row.fade-out-premium {
+        opacity: 0;
+        transform: translateX(50px) scale(0.9);
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+        overflow: hidden;
+        border-bottom: none;
+    }
+
     .item-img-box {
-        width: 90px;
-        height: 90px;
-        background: #f1f5f9;
-        border-radius: 12px;
+        width: 80px;
+        height: 80px;
+        background: #f8fafc;
+        border-radius: 14px;
         overflow: hidden;
         flex-shrink: 0;
         border: 1px solid #e2e8f0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        transition: transform 0.3s ease;
+    }
+    .cart-item-row:hover .item-img-box {
+        transform: scale(1.05);
     }
     .item-img-box img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ইমেজ এবং টাইটেল লিংকের কাস্টম স্টাইল */
+    .item-img-link {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+    .item-title-link {
+        text-decoration: none;
+        color: #0f172a;
+        transition: color 0.2s ease;
+    }
+    .item-title-link:hover {
+        color: var(--primary-color);
+    }
 
     .item-details {
         flex-grow: 1;
         padding: 0 20px;
     }
-    .item-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+    .item-title { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
     .item-meta { font-size: 0.85rem; color: #64748b; font-weight: 500; margin-bottom: 10px; }
     .item-meta span { 
         background: rgba(0, 75, 35, 0.08); 
@@ -91,27 +132,27 @@
         font-weight: 700; 
         padding: 2px 10px; 
         border-radius: 12px;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
     }
 
-    /* Custom Modern Quantity Controls */
+    /* Custom Modern Slim Quantity Controls */
     .qty-control-box {
         display: flex;
         align-items: center;
         border: 1px solid #cbd5e1;
-        border-radius: 25px;
+        border-radius: 20px;
         overflow: hidden;
-        width: 105px;
-        height: 34px;
+        width: 100px;
+        height: 32px;
         background: #f8fafc;
         padding: 2px;
     }
     .qty-btn {
         background: #fff;
         border: none;
-        width: 30px;
+        width: 28px;
         height: 100%;
-        font-size: 0.95rem;
+        font-size: 0.85rem;
         font-weight: 700;
         cursor: pointer;
         color: var(--primary-color);
@@ -119,15 +160,20 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         transition: all 0.2s ease;
     }
-    .qty-btn:hover { background: var(--primary-color); color: #fff; }
+    .qty-btn:hover:not(:disabled) { background: var(--primary-color); color: #fff; }
+    .qty-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        background: #f1f5f9;
+    }
     .qty-val {
-        width: 35px;
+        width: 36px;
         text-align: center;
         border: none;
-        font-size: 0.88rem;
+        font-size: 0.9rem;
         font-weight: 700;
         color: #0f172a;
         background: transparent;
@@ -139,8 +185,8 @@
         padding-left: 15px;
         min-width: 110px;
     }
-    .item-price-total { font-size: 1.2rem; font-weight: 800; color: var(--primary-color); display: block; }
-    .item-price-each { font-size: 0.78rem; color: #64748b; margin-top: 2px; display: block; }
+    .item-price-total { font-size: 1.1rem; font-weight: 800; color: var(--primary-color); display: block; }
+    .item-pricing .item-price-each { font-size: 0.75rem; color: #64748b; margin-top: 2px; display: block; }
 
     .remove-item-btn {
         background: none;
@@ -150,17 +196,18 @@
         cursor: pointer;
         margin-left: 20px;
         transition: color 0.2s, transform 0.2s;
+        padding: 5px;
     }
-    .remove-item-btn:hover { color: var(--danger-color); transform: scale(1.18); }
+    .remove-item-btn:hover { color: var(--danger-color); transform: scale(1.2); }
 
     /* Summary Sidebar Panel */
     .summary-sidebar {
         position: sticky;
         top: 100px;
-        border-top: 4px solid var(--primary-color);
+        border-top: 5px solid var(--primary-color);
     }
     .summary-title { 
-        font-size: 1.25rem; 
+        font-size: 1.2rem; 
         font-weight: 800; 
         text-transform: uppercase; 
         margin-bottom: 20px; 
@@ -170,12 +217,12 @@
         letter-spacing: 0.5px;
     }
     
-    .summary-row { display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 0.95rem; font-weight: 500; color: #475569; }
+    .summary-row { display: flex; justify-content: space-between; margin-bottom: 14px; font-size: 0.92rem; font-weight: 500; color: #475569; }
     .summary-row.total-row {
         margin-top: 20px;
         padding-top: 15px;
         border-top: 2px dashed #cbd5e1;
-        font-size: 1.3rem;
+        font-size: 1.25rem;
         font-weight: 800;
         color: #0f172a;
     }
@@ -183,32 +230,32 @@
 
     .checkout-btn {
         background: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
-        color: white; border: none; width: 100%; padding: 14px 0; border-radius: 12px;
-        font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.3s;
-        margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px;
+        color: white; border: none; width: 100%; padding: 13px 0; border-radius: 10px;
+        font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;
+        margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;
         text-transform: uppercase; letter-spacing: 0.5px;
-        box-shadow: 0 4px 15px rgba(251, 133, 0, 0.25);
+        box-shadow: 0 4px 14px rgba(251, 133, 0, 0.25);
         text-decoration: none;
     }
     .checkout-btn:hover {
         background: linear-gradient(135deg, #fb8500 0%, #ffb703 100%);
-        box-shadow: 0 6px 20px rgba(251, 133, 0, 0.4);
+        box-shadow: 0 6px 20px rgba(251, 133, 0, 0.35);
+        transform: translateY(-1px);
     }
 
     /* Empty State View */
     .empty-cart-state {
-        text-align: center; padding: 60px 20px;
+        text-align: left; padding: 50px 40px;
     }
-    .empty-cart-state i { font-size: 4.5rem; color: #cbd5e1; margin-bottom: 20px; display: block; }
-    .empty-cart-state h2 { font-size: 1.6rem; font-weight: 800; color: #334155; margin-bottom: 10px; text-transform: uppercase; }
+    .empty-cart-state i { font-size: 1.5rem; color: #0f172a; margin-bottom: 15px; display: block; }
+    .empty-cart-state h2 { font-size: 2rem; font-weight: 700; color: #1e293b; margin-bottom: 10px; letter-spacing: -0.5px; }
     .empty-cart-state p { color: #64748b; margin-bottom: 25px; font-size: 0.95rem; }
     .empty-cart-state .shop-now-btn {
         display: inline-flex; align-items: center; justify-content: center;
-        background: var(--primary-color); color: #fff;
-        padding: 12px 30px; border-radius: 10px; text-decoration: none; font-weight: 600;
-        transition: background 0.2s; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;
+        color: #2563eb; background: none; padding: 0; text-decoration: none; font-weight: 600;
+        transition: color 0.2s; font-size: 0.95rem;
     }
-    .empty-cart-state .shop-now-btn:hover { background: #003314; }
+    .empty-cart-state .shop-now-btn:hover { color: #1d4ed8; text-decoration: underline; }
 </style>
 
 <div class="cart-container">
@@ -221,21 +268,27 @@
                 {% for item in cart_items %}
                 <div class="cart-item-row" data-item-id="{{ item.id }}">
                     <div class="item-img-box">
-                        {% if item.jersey.image_url %}
-                            <img src="{{ item.jersey.image_url }}" alt="{{ item.jersey.title }}">
+                        {% if item.jersey.image %}
+                            <a href="{% url 'jersey_detail' item.jersey.id %}" class="item-img-link">
+                                <img src="{{ item.jersey.image.url }}" alt="{{ item.jersey.title }}">
+                            </a>
                         {% else %}
                             <div style="height:100%; display:flex; align-items:center; justify-content:center;">
-                                <i class="fa-solid fa-shirt" style="font-size: 2rem; color: #cbd5e1;"></i>
+                                <i class="fa-solid fa-shirt" style="font-size: 1.5rem; color: #cbd5e1;"></i>
                             </div>
                         {% endif %}
                     </div>
 
                     <div class="item-details">
-                        <div class="item-title">{{ item.jersey.title }}</div>
+                        <div class="item-title">
+                            <a href="{% url 'jersey_detail' item.jersey.id %}" class="item-title-link">
+                                {{ item.jersey.title }}
+                            </a>
+                        </div>
                         <div class="item-meta">Size: <span>{{ item.size }}</span></div>
                         
                         <div class="qty-control-box">
-                            <button type="button" class="qty-btn cart-qty-minus" data-id="{{ item.id }}">
+                            <button type="button" class="qty-btn cart-qty-minus" data-id="{{ item.id }}" {% if item.quantity <= 1 %}disabled{% endif %}>
                                 <i class="fa-solid fa-minus fa-xs"></i>
                             </button>
                             <input type="text" class="qty-val" value="{{ item.quantity }}" readonly>
@@ -264,15 +317,15 @@
                     <span>৳<span id="summary-subtotal">{{ total_price }}</span></span>
                 </div>
                 <div class="summary-row">
-                    <span>Estimated Shipping</span>
-                    <span style="color: #2b9348; font-weight: 700;">FREE</span>
+                    <span>Delivery Fee</span>
+                    <span style="color: #2b9348; font-weight: 700;">৳<span id="summary-delivery">{{ delivery_fee }}</span></span>
                 </div>
                 <div class="summary-row total-row">
                     <span>Total Amount</span>
-                    <span class="total-amount">৳<span id="summary-total">{{ total_price }}</span></span>
+                    <span class="total-amount">৳<span id="summary-total">{{ grand_total }}</span></span>
                 </div>
 
-                <a href="#" class="checkout-btn">
+                <a href="/checkout/" class="checkout-btn">
                     <i class="fa-solid fa-credit-card"></i> Proceed To Checkout
                 </a>
             </div>
@@ -281,37 +334,39 @@
     </div>
 
     <div id="empty-cart-state" {% if cart_items %}style="display: none;"{% endif %}>
-        <div class="glass-card empty-state">
+        <div class="glass-card empty-cart-state">
             <i class="fa-solid fa-bag-shopping"></i>
             <h2>Your Cart is Empty</h2>
             <p>Looks like you haven't added any World Cup jerseys to your shopping cart.</p>
             <a href="{% url 'jersey_list' %}" class="shop-now-btn">
-                <i class="fa-solid fa-shirt me-2"></i> Shop Premium Kits
+                <i class="fa-solid fa-shirt me-1"></i> Shop Premium Kits
             </a>
         </div>
     </div>
 </div>
 
 <script>
-    // Common function to fetch cookie token required by Django CSRF Security Protection
     function getCSRFToken() {
         return document.cookie.split('; ')
             .find(row => row.startsWith('csrftoken='))
             ?.split('=')[1];
     }
 
-    // Live Change Controller for Quantities (Increase / Decrease) via AJAX
+    // প্লাস এবং মাইনাস বাটনের মাধ্যমে কোয়ান্টিটি আপডেট করার AJAX লজিক
     document.querySelectorAll('.qty-btn').forEach(button => {
         button.addEventListener('click', function() {
             const itemId = this.getAttribute('data-id');
             const action = this.classList.contains('cart-qty-plus') ? 'increase' : 'decrease';
             const row = this.closest('.cart-item-row');
             const qtyInput = row.querySelector('.qty-val');
+            const minusBtn = row.querySelector('.cart-qty-minus');
             
-            // If quantity is 1 and user clicks minus, prevent request
             if (action === 'decrease' && parseInt(qtyInput.value) <= 1) return;
 
-            fetch('/update-cart-item/', {
+            // ডাবল ক্লিক বা রিকোয়েস্ট ওভারল্যাপ আটকাতে বাটন লক করা
+            this.disabled = true;
+
+            fetch("{% url 'update_cart_item' %}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -321,33 +376,46 @@
             })
             .then(response => response.json())
             .then(data => {
+                this.disabled = false; // বাটন আনলক
                 if (data.status === 'success') {
-                    // Real-time update values instantly inside HTML page without loading spinner
                     qtyInput.value = data.quantity;
                     row.querySelector('.subtotal-val').innerText = data.item_subtotal;
-                    document.getElementById('summary-subtotal').innerText = data.total_price;
-                    document.getElementById('summary-total').innerText = data.total_price;
                     
-                    // Navbar-এর কার্ট ব্যাজ কাউন্টার হ্যান্ডেল করার জন্য অপশনাল সিনক্রোনাইজার
-                    const globalBadge = document.querySelector('.cart-badge');
+                    // ব্যাকএন্ডের পাঠানো ডাইনামিক রিয়েল-টাইম ডাটা সিঙ্ক
+                    document.getElementById('summary-subtotal').innerText = data.total_price;
+                    document.getElementById('summary-delivery').innerText = data.delivery_fee;
+                    document.getElementById('summary-total').innerText = data.grand_total;
+                    
+                    // মাইনাস বাটনের ডিজেবল স্টেট হ্যান্ডেল করা
+                    if (parseInt(data.quantity) <= 1) {
+                        minusBtn.disabled = true;
+                    } else {
+                        minusBtn.disabled = false;
+                    }
+                    
+                    // গ্লোবাল নেভবার কার্ট ব্যাজ আপডেট
+                    const globalBadge = document.getElementById('nav-cart-badge') || document.querySelector('.cart-badge');
                     if (globalBadge) globalBadge.innerText = data.total_items;
                 } else {
                     alert('Error: ' + data.message);
                 }
             })
-            .catch(error => console.error('Error modifying quantity:', error));
+            .catch(error => {
+                this.disabled = false;
+                console.error('Error modifying quantity:', error);
+            });
         });
     });
 
-    // Instant Item Removal Animation and AJAX execution 
+    // ডিলিট বাটনের জন্য স্মুথ প্রিমিয়াম ফেড-আউট অ্যানিমেশন লজিক
     document.querySelectorAll('.remove-item-btn').forEach(button => {
         button.addEventListener('click', function() {
-            if (!confirm('Are you sure you want to remove this jersey from cart?')) return;
-            
             const itemId = this.getAttribute('data-id');
             const row = this.closest('.cart-item-row');
+            
+            this.disabled = true;
 
-            fetch('/remove-from-cart/', {
+            fetch("{% url 'remove_from_cart' %}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -358,31 +426,36 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    // Smooth fade out layout effect animation before removing component element completely
-                    row.style.opacity = '0';
-                    row.style.transform = 'scale(0.9)';
+                    // প্রিমিয়াম ফেড-আউট সিএসএস ক্লাস যুক্ত করা হলো
+                    row.classList.add('fade-out-premium');
                     
                     setTimeout(() => {
                         row.remove();
                         
-                        // Update dynamic order summaries totals configuration
+                        // সাইডবার ডাটা সম্পূর্ণ ব্যাকএন্ড রেসপন্স দিয়ে সিঙ্ক
                         document.getElementById('summary-subtotal').innerText = data.total_price;
-                        document.getElementById('summary-total').innerText = data.total_price;
+                        document.getElementById('summary-delivery').innerText = data.delivery_fee;
+                        document.getElementById('summary-total').innerText = data.grand_total;
                         
-                        const globalBadge = document.querySelector('.cart-badge');
+                        // গ্লোবাল কার্ট ব্যাজ সিঙ্ক
+                        const globalBadge = document.getElementById('nav-cart-badge') || document.querySelector('.cart-badge');
                         if (globalBadge) globalBadge.innerText = data.total_items;
                         
-                        // If zero items left in list, trigger empty-state card dynamically
+                        // এম্পটি স্টেট লেআউট টগল (সব আইটেম ডিলিট হলে)
                         if (document.querySelectorAll('.cart-item-row').length === 0) {
                             document.getElementById('cart-content-wrapper').style.display = 'none';
                             document.getElementById('empty-cart-state').style.display = 'block';
                         }
-                    }, 300);
+                    }, 400); // সিএসএস ট্রানজিশনের টাইমিংয়ের সাথে মিল রেখে ৪০০ মিলি-সেকেন্ড ডিলে
                 } else {
+                    this.disabled = false;
                     alert('Error: ' + data.message);
                 }
             })
-            .catch(error => console.error('Error removing item from session:', error));
+            .catch(error => {
+                this.disabled = false;
+                console.error('Error removing item:', error);
+            });
         });
     });
 </script>
