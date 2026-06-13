@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ jersey.title }} | KitZone</title>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -127,7 +129,7 @@
             background: white; 
             padding: 25px; 
             border-radius: 14px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04); 
+            box-shadow: 0 4px 15 rgba(0,0,0,0.04); 
             align-items: center;
         }
         .product-image img { width: 100%; height: auto; max-height: 380px; object-fit: cover; border-radius: 10px; }
@@ -171,31 +173,30 @@
         .submit-review-btn { background: var(--primary-color); color: white; border: none; padding: 8px 18px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
         .login-alert { background: rgba(255, 183, 3, 0.08); border: 1px dashed var(--accent-color); padding: 14px; border-radius: 10px; text-align: center; color: #7c2d12; font-weight: 500; font-size: 0.85rem; }
 
-        /* Dynamic Pop-up Toast Message Box */
+        /* Dynamic Pop-up Toast Message Box - আপগ্রেডেড */
         .toast-notification {
             position: fixed;
             bottom: 25px;
             right: -400px;
             background: #1e293b;
             color: #ffffff;
-            padding: 12px 20px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            border-right: 4px solid var(--accent-color);
-            font-size: 0.85rem;
+            padding: 14px 24px;
+            border-radius: 12px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+            border-right: 5px solid #ffb703;
+            font-size: 0.9rem;
             font-weight: 600;
             z-index: 9999;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .toast-notification.show { right: 25px; }
+        .toast-error { background: #1e1b4b; border-right: 5px solid #ef4444; }
     </style>
 </head>
 <body>
-
-    {% csrf_token %}
 
     <nav class="navbar">
         <a href="/" class="nav-logo">🏆 Kit<span>Zone</span></a>
@@ -329,14 +330,18 @@
             if(val > 1) qtyInput.value = val - 1;
         });
 
-        // Dynamic Toast Notification UI Function
-        function showToast(message) {
+        // Dynamic Luxury Toast Notification UI Function (Error Mode সম্বলিত)
+        function showToast(message, isError = false) {
             const oldToast = document.querySelector('.toast-notification');
             if (oldToast) oldToast.remove();
 
             const toast = document.createElement('div');
-            toast.className = 'toast-notification';
-            toast.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #ffb703; font-size: 1.05rem;"></i> <span>${message}</span>`;
+            toast.className = `toast-notification ${isError ? 'toast-error' : ''}`;
+            
+            const icon = isError ? 'fa-circle-xmark' : 'fa-circle-check';
+            const iconColor = isError ? '#ef4444' : '#ffb703';
+            
+            toast.innerHTML = `<i class="fa-solid ${icon}" style="color: ${iconColor}; font-size: 1.15rem;"></i> <span>${message}</span>`;
             document.body.appendChild(toast);
 
             setTimeout(() => toast.classList.add('show'), 100);
@@ -346,24 +351,32 @@
             }, 3000);
         }
 
-        // Real-time Django Backend AJAX Integration Logic
+        // Django Messages ক্যাচ করে টোস্ট নোটিফিকেশন হিসেবে শো করা (রিভিউ সাবমিটের জন্য উপকারী)
+        {% if messages %}
+            {% for message in messages %}
+                showToast("{{ message }}", {% if message.tags == 'error' %}true{% else %}false{% endif %});
+            {% endfor %}
+        {% endif %}
+
+        // Real-time Django Backend AJAX Integration Logic (With 401 Unauthorized Redirect)
         document.getElementById('add-to-bag-btn')?.addEventListener('click', function() {
             const sizeDropdown = document.getElementById('jersey-size-dropdown');
             const selectedSize = sizeDropdown ? sizeDropdown.value : '';
             const quantity = qtyInput.value;
             
             if(!selectedSize || selectedSize === "Out of Stock") {
-                alert("This product is out of stock!");
+                showToast("This product is out of stock!", true);
                 return;
             }
 
-            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            // মেটা ট্যাগ থেকে প্রফেশনাল উপায়ে CSRF টোকেন রিসিভ করা
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             fetch('/add-to-cart/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
+                    'X-CSRFToken': csrfToken
                 },
                 body: JSON.stringify({
                     'jersey_id': "{{ jersey.id }}",
@@ -371,9 +384,21 @@
                     'quantity': quantity
                 })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
+            .then(async response => {
+                const data = await response.json();
+
+                // যদি ইউজার লগইন না থাকে (401 Status Code)
+                if (response.status === 401 && data.status === 'not_logged_in') {
+                    showToast(data.message, true);
+                    // ২ সেকেন্ড পর অটোমেটিক লগইন পেজে রিডাইরেক্ট করা হবে
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url;
+                    }, 2000);
+                    return;
+                }
+
+                // সাকসেসফুলি কার্টে অ্যাড হলে
+                if (response.ok && data.status === 'success') {
                     showToast(`🛒 ${data.message}`);
                     
                     const badge = document.getElementById('nav-cart-badge');
@@ -381,12 +406,12 @@
                         badge.innerText = data.total_items;
                     }
                 } else {
-                    alert("Error: " + data.message);
+                    showToast(data.message || "Something went wrong!", true);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert("Something went wrong while adding to cart.");
+                showToast("Network error, please try again.", true);
             });
         });
     </script>

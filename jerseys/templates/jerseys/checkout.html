@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    :root { 
+        --primary-color: #004b23; 
+        --primary-gradient: linear-gradient(135deg, #004b23 0%, #007200 100%);
+        --card-bg: rgba(255, 255, 255, 0.98); 
+    }
+    body {
+        background: linear-gradient(rgba(244, 246, 248, 0.85), rgba(244, 246, 248, 0.85)), 
+                    url('https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=1920&q=80') center center fixed;
+        background-size: cover; 
+        min-height: 100vh;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    /* কম্প্যাক্ট সাইজিং ফিক্স (স্ক্রিন আর বেশি বড় বা চঙ্কি লাগবে না) */
+    .checkout-container { max-width: 1020px; margin: 35px auto; padding: 0 20px; }
+    .checkout-wrapper { display: grid; grid-template-columns: 1.35fr 1fr; gap: 24px; align-items: start; }
+    @media (max-width: 992px) { .checkout-wrapper { grid-template-columns: 1fr; } }
+    
+    .glass-card { 
+        background: var(--card-bg); 
+        border-radius: 12px; 
+        padding: 22px; 
+        box-shadow: 0 10px 25px rgba(0,0,0,0.04); 
+        border: 1px solid rgba(255,255,255,0.8);
+        border-top: 4px solid var(--primary-color);
+    }
+    .section-title { 
+        font-size: 0.95rem; 
+        font-weight: 800; 
+        color: var(--primary-color); 
+        margin-bottom: 20px; 
+        border-bottom: 1px solid #edf2f7; 
+        padding-bottom: 10px; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px;
+    }
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 0.82rem; font-weight: 700; color: #475569; margin-bottom: 6px; display: block; }
+    
+    .form-control-custom { 
+        width: 100%; 
+        padding: 10px 14px; 
+        border-radius: 8px; 
+        border: 1px solid #cbd5e1; 
+        background: #f8fafc; 
+        font-size: 0.88rem; 
+        color: #1e293b;
+        transition: all 0.25s ease;
+    }
+    .form-control-custom:focus { 
+        border-color: var(--primary-color); 
+        background: #fff; 
+        box-shadow: 0 0 0 4px rgba(0, 75, 35, 0.1);
+        outline: none; 
+    }
+    
+    .locked-input-wrapper { position: relative; }
+    .form-control-custom.locked { 
+        background: #e2e8f0; 
+        border-color: #cbd5e1; 
+        color: #334155; 
+        font-weight: 700;
+        cursor: not-allowed; 
+        padding-right: 120px;
+    }
+    .lock-badge {
+        position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+        font-size: 0.68rem; font-weight: 800; background: #cbd5e1; color: #0f172a;
+        padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; gap: 4px;
+        text-transform: uppercase;
+    }
+
+    /* পেমেন্ট অপশন গ্রিড এবং সিলেক্টেড ইফেক্ট */
+    .payment-options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .payment-method-card {
+        border: 2px solid #e2e8f0; 
+        border-radius: 10px; 
+        padding: 14px;
+        display: flex; 
+        align-items: center; 
+        gap: 15px; 
+        cursor: pointer; 
+        transition: all 0.2s ease;
+        background: #fff; 
+        position: relative;
+    }
+    .payment-method-card:hover { border-color: #cbd5e1; }
+    
+    .bkash-logo-img {
+        width: 45px;
+        height: 45px;
+        object-fit: contain;
+        background: #fff;
+        padding: 4px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        min-width: 45px;
+    }
+    
+    /* রেডিও বাটন ট্রিক এবং চুজেন অ্যানিমেশন */
+    input[type="radio"].payment-radio { display: none; }
+    input[type="radio"].payment-radio:checked + .payment-method-card { 
+        border-color: var(--primary-color); 
+        background: #f0fdf4; 
+        box-shadow: 0 4px 12px rgba(0, 75, 35, 0.04);
+    }
+    input[type="radio"].payment-radio:checked + .payment-method-card::after {
+        content: "\f058"; 
+        font-family: "Font Awesome 6 Free"; 
+        font-weight: 900;
+        position: absolute; 
+        right: 18px; 
+        color: var(--primary-color); 
+        font-size: 1.2rem;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    /* বিল ক্যালকুলেশন ডিজাইন */
+    .summary-item-row { 
+        display: flex; align-items: center; justify-content: space-between; 
+        padding: 10px 0; border-bottom: 1px solid #f1f5f9; 
+    }
+    .bill-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.88rem; color: #475569; }
+    .total-row { 
+        margin-top: 15px; padding-top: 14px; border-top: 2px dashed #cbd5e1; 
+        font-size: 1.15rem; font-weight: 800; color: #0f172a; 
+    }
+    
+    .place-order-btn { 
+        background: var(--primary-gradient); 
+        color: white; border: none; width: 100%; padding: 14px 0; 
+        border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; 
+        margin-top: 15px; text-transform: uppercase; letter-spacing: 0.5px;
+        box-shadow: 0 5px 15px rgba(0, 75, 35, 0.2);
+        transition: all 0.3s ease;
+    }
+    .place-order-btn:hover { 
+        transform: translateY(-1px); 
+        box-shadow: 0 7px 20px rgba(0, 75, 35, 0.3); 
+    }
+</style>
+
+<div class="checkout-container">
+    <div class="d-flex align-items-center gap-2 mb-4">
+        <h4 class="fw-bold m-0" style="color: #004b23; letter-spacing: -0.5px;">Secure Checkout</h4>
+        <span class="badge bg-success bg-opacity-10 text-success px-2 py-1" style="border-radius: 12px; font-size: 0.75rem; font-weight: 600;">
+            <i class="fa-solid fa-lock me-1"></i> SSL Secured
+        </span>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger border-0 mb-4 shadow-sm" style="border-radius: 12px; background: #fef2f2; color: #991b1b; font-size: 0.88rem;">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i> {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" action="{% url 'checkout' %}">
+        {% csrf_token %}
+        <div class="checkout-wrapper">
+            
+            <!-- বামের কলাম: শিপিং ইনফরমেশন -->
+            <div class="glass-card">
+                <div class="section-title"><i class="fa-solid fa-truck-fast me-2"></i>Shipping Information</div>
+                
+                <div class="form-group">
+                    <label class="form-label">Account Verified Name</label>
+                    <div class="locked-input-wrapper">
+                        <input type="text" class="form-control-custom locked" 
+                               value="{% if request.user.is_authenticated %}{{ request.user.get_full_name|default:request.user.username }}{% else %}Guest User{% endif %}" 
+                               readonly>
+                        <span class="lock-badge"><i class="fa-solid fa-user-shield text-success"></i> Fixed Name</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" name="email" class="form-control-custom" placeholder="name@example.com" required 
+                               value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}">
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" name="phone_number" class="form-control-custom" placeholder="01XXXXXXXXX" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Full Shipping Address</label>
+                    <textarea name="address" class="form-control-custom" rows="2" placeholder="House no, road, area details..." required></textarea>
+                </div>
+
+                <div class="form-group mb-0">
+                    <label class="form-label">City / District</label>
+                    <input type="text" name="city" class="form-control-custom" placeholder="e.g. Dhaka, Pabna" required>
+                </div>
+            </div>
+
+            <!-- ডানের কলাম: পেমেন্ট মেথড এবং মেমো সামারি -->
+            <div>
+                <!-- পেমেন্ট গেটওয়ে সিলেকশন (COD + bKash অরিজিনাল লোগো) -->
+                <div class="glass-card mb-4">
+                    <div class="section-title"><i class="fa-solid fa-wallet me-2"></i>Select Payment Method</div>
+                    
+                    <div class="payment-options-grid">
+                        <!-- ১. ক্যাশ অন ডেলিভারি অপশন -->
+                        <label class="m-0 cursor-pointer">
+                            <input type="radio" name="payment_method" value="COD" checked class="payment-radio">
+                            <div class="payment-method-card">
+                                <div class="d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-3" style="width: 45px; height: 45px; min-width: 45px;">
+                                    <i class="fa-solid fa-hand-holding-dollar fs-4"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-dark" style="font-size:0.9rem;">Cash On Delivery</div>
+                                    <small class="text-muted" style="font-size:0.78rem;">Pay inside Bangladesh upon receiving kit</small>
+                                </div>
+                            </div>
+                        </label>
+
+                        <!-- ২. অরিজিনাল ব্র্যান্ডিং সহ বিকাশ অপশন -->
+                        <label class="m-0 cursor-pointer">
+                            <input type="radio" name="payment_method" value="Bkash" class="payment-radio">
+                            <div class="payment-method-card">
+                                <img src="https://www.logo.wine/a/logo/BKash/BKash-Icon-Logo.wine.svg" class="bkash-logo-img" alt="bKash">
+                                <div>
+                                    <div class="fw-bold text-dark" style="font-size:0.9rem;">bKash </div>
+                                    <small class="text-muted" style="font-size:0.78rem;">Instant simulated digital wallet payment</small>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- সামারি মেমো -->
+                <div class="glass-card">
+                    <div class="section-title"><i class="fa-solid fa-receipt me-2"></i>Order Summary</div>
+                    
+                    <div style="max-height: 150px; overflow-y: auto; padding-right: 5px;">
+                        {% for item in cart_items %}
+                        <div class="summary-item-row">
+                            <div>
+                                <span class="fw-bold text-dark" style="font-size:0.85rem;">{{ item.jersey.title }}</span>
+                                <div class="text-muted" style="font-size:0.75rem;">Size: <span class="badge bg-secondary bg-opacity-10 text-dark" style="font-size:0.7rem;">{{ item.size }}</span> × {{ item.quantity }}</div>
+                            </div>
+                            <span class="fw-bold text-dark" style="font-size:0.88rem;">৳{{ item.total_price }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="bill-row mt-3">
+                        <span>Subtotal</span>
+                        <span class="fw-semibold text-dark">৳{{ total_price }}</span>
+                    </div>
+                    <div class="bill-row">
+                        <span>Delivery Charge</span>
+                        <span class="fw-semibold text-dark">৳{{ delivery_fee }}</span>
+                    </div>
+                    
+                    <div class="bill-row total-row">
+                        <span>Grand Total</span>
+                        <span style="color: #004b23;">৳{{ grand_total }}</span>
+                    </div>
+
+                    <button type="submit" class="place-order-btn">
+                        <i class="fa-solid fa-circle-check me-2"></i>Complete Order
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+{% endblock %}

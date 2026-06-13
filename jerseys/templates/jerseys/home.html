@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🏆 KitZone 2026 | Premium World Cup Store</title>
+    <!-- AJAX রিকোয়েস্টের জন্য সিকিউর CSRF টোকেন মেটা ট্যাগ -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -203,7 +206,7 @@
             overflow: hidden;
             position: relative;
             cursor: pointer;
-            box-shadow: 0 6px 18 rgba(0,0,0,0.08);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
             display: block;
             text-decoration: none;
             border: 1px solid rgba(255,255,255,0.2);
@@ -446,15 +449,15 @@
             </div>
         </div>
 
+        <!-- টাইটেল ব্লকের নেস্টেড কন্ডিশনাল বাগ ফিক্স করা হয়েছে এখানে -->
         <div class="category-title">
             <span>
                 {% if search_query %}
                     Search Results for "{{ search_query }}"
-                {% if selected_category %}
+                {% elif selected_category %}
                     {{ selected_category|upper }} KITS
                 {% else %}
                     TRENDING JERSEYS
-                {% endif %}
                 {% endif %}
             </span>
             <a href="{% url 'jersey_list' %}" style="font-size: 0.85rem; color: #004b23; text-transform: none; font-weight: 600;">Show All</a>
@@ -507,8 +510,10 @@
             <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b; font-weight: 600;">No jerseys found matching your criteria.</div>
             {% endfor %}
         </div>
-    </div> <script>
-        // Custom Luxury Toast Notification JavaScript Function
+    </div>
+
+    <script>
+        // কাস্টম লাক্সারি টোস্ট নোটিফিকেশন জাভাস্ক্রিপ্ট ফাংশন
         function showToast(message, isError = false) {
             const oldToast = document.querySelector('.toast-notification');
             if (oldToast) oldToast.remove();
@@ -536,6 +541,60 @@
                 showToast("{{ message }}", {% if message.tags == 'error' %}true{% else %}false{% endif %});
             {% endfor %}
         {% endif %}
+
+        /**
+         * রিয়েল-টাইম AJAX কার্ট ফাংশন (401 আনঅথরাইজড রিডাইরেক্ট হ্যান্ডলারসহ)
+         * এই ফাংশনটি তুমি তোমার ডিটেইল পেজেও হুবহু ব্যবহার করতে পারবে।
+         */
+        async function addToCart(jerseyId, selectedSize, quantity = 1) {
+            // মেটা ট্যাগ থেকে CSRF টোকেন রিসিভ করা
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            try {
+                const response = await fetch("{% url 'add_to_cart' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        jersey_id: jerseyId,
+                        size: selectedSize,
+                        quantity: quantity
+                    })
+                });
+
+                const data = await response.json();
+
+                // যদি ইউজার লগইন না থাকে (ভিজ্যুয়াল রেফারেন্স: image_dfd25e.png)
+                if (response.status === 401 && data.status === 'not_logged_in') {
+                    showToast(data.message, true);
+                    
+                    // ২ সেকেন্ড পর অটোমেটিক লগইন পেজে পাঠিয়ে দেওয়া হবে
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url;
+                    }, 2000);
+                    return;
+                }
+
+                // সাকসেস রেসপন্স হ্যান্ডলিং
+                if (response.ok && data.status === 'success') {
+                    showToast(data.message, false);
+                    
+                    // নেভবারের কার্ট ব্যাজটি ডাইনামিকভাবে আপডেট করা
+                    const badge = document.getElementById('nav-cart-badge');
+                    if (badge) {
+                        badge.innerText = data.total_items;
+                    }
+                } else {
+                    showToast(data.message || 'Something went wrong!', true);
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Network error, please try again.', true);
+            }
+        }
     </script>
 </body>
 </html>

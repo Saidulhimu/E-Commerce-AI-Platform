@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    :root {
+        --primary-color: #004b23;
+        --success-main: #10b981;
+    }
+    body {
+        background: #f8fafc;
+        font-family: 'Inter', sans-serif;
+    }
+    .success-container {
+        max-width: 580px; 
+        margin: 50px auto;
+        padding: 0 20px;
+    }
+    .success-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        border: 1px solid #e2e8f0;
+        text-align: center;
+    }
+
+    /* --- আই-ক্যাচি সাকসেস অ্যানিমেশন യുഐ --- */
+    .animation-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .success-icon-circle {
+        width: 70px;
+        height: 70px;
+        background: #f0fdf4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--success-main);
+        font-size: 2rem;
+        position: relative;
+        animation: scaleIn 0.5s cubic-bezier(0.12, 0.89, 0.32, 1.14) forwards, pulseGreen 2s infinite 0.6s;
+    }
+    
+    @keyframes scaleIn {
+        0% { transform: scale(0); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes pulseGreen {
+        0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.2); }
+        70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* --- টেক্সট সাইজ অপ্টিমাইজেশন --- */
+    .success-title {
+        font-size: 1.4rem; 
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -0.5px;
+        margin-bottom: 6px;
+    }
+    .success-subtitle {
+        font-size: 0.88rem;
+        color: #64748b;
+        margin-bottom: 25px;
+    }
+
+    /* --- মেমো ইনফো টেবিল স্টাইলিং --- */
+    .invoice-box {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 18px;
+        border: 1px solid #edf2f7;
+        margin-bottom: 25px;
+        text-align: left;
+    }
+    .invoice-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        font-size: 0.85rem;
+        color: #475569;
+        border-bottom: 1px dashed #e2e8f0;
+    }
+    .invoice-row:last-of-type {
+        border-bottom: none;
+    }
+    .invoice-label {
+        font-weight: 500;
+    }
+    .invoice-value {
+        font-weight: 700;
+        color: #0f172a;
+    }
+    
+    .grand-total-box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 2px solid #e2e8f0;
+    }
+    .total-title {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: #0f172a;
+    }
+    .total-price {
+        font-size: 1.25rem;
+        font-weight: 900;
+        color: var(--primary-color);
+    }
+
+    /* বাটন ডিজাইন */
+    .action-btn-group {
+        display: flex;
+        gap: 12px;
+    }
+    .btn-custom {
+        flex: 1;
+        padding: 11px 0;
+        font-size: 0.88rem;
+        font-weight: 700;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        display: inline-block;
+        text-align: center;
+    }
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #004b23 0%, #007200 100%);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 75, 35, 0.15);
+    }
+    .btn-primary-custom:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 15px rgba(0, 75, 35, 0.25);
+        color: white;
+    }
+    .btn-secondary-custom {
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+    }
+    .btn-secondary-custom:hover {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+</style>
+
+<div class="success-container">
+    <div class="success-card">
+        
+        <!-- সাকসেস অ্যানিমেশন সার্কেল -->
+        <div class="animation-wrapper">
+            <div class="success-icon-circle">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+        </div>
+
+        <!-- হেডিং টেক্সটসমূহ -->
+        <h2 class="success-title">Order Confirmed!</h2>
+        <p class="success-subtitle">Thank you for ordering with KitZone. Your order has been placed successfully.</p>
+
+        <!-- কমপ্যাক্ট মেমো বক্স -->
+        <div class="invoice-box">
+            <div class="invoice-row">
+                <span class="invoice-label">Order ID:</span>
+                <span class="invoice-value" style="color: var(--primary-color);">#{{ order.id }}</span>
+            </div>
+            <div class="invoice-row">
+                <span class="invoice-label">Customer Name:</span>
+                <span class="invoice-value">{{ order.user.get_full_name|default:order.user.username }}</span>
+            </div>
+            <div class="invoice-row">
+                <span class="invoice-label">Payment Status:</span>
+                <span>
+                    <span class="badge bg-warning bg-opacity-10 text-warning px-2 py-1" style="font-size: 0.72rem; font-weight: 700; border-radius: 6px;">
+                        {{ order.payment_status|default:"Pending" }}
+                    </span>
+                </span>
+            </div>
+            <div class="invoice-row">
+                <span class="invoice-label">Method:</span>
+                <span class="invoice-value">{{ order.payment_method }}</span>
+            </div>
+            
+            <!-- গ্র্যান্ড টোটাল সেকশন -->
+            <div class="grand-total-box">
+                <span class="total-title">Paid Amount:</span>
+                <span class="total-price">৳{{ order.total_amount }}</span>
+            </div>
+        </div>
+
+        <!-- অ্যাকশন বাটন গ্রুপ (ফিক্সড রুট পাথ সহ) -->
+        <div class="action-btn-group">
+            <a href="/" class="btn-custom btn-primary-custom">
+                <i class="fa-solid fa-basket-shopping me-1"></i> Continue Shopping
+            </a>
+            <a href="#" class="btn-custom btn-secondary-custom">
+                <i class="fa-solid fa-file-invoice me-1"></i> View Order
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .bkash-frame { max-width: 400px; margin: 60px auto; background: #e2136e; border-radius: 15px; overflow: hidden; box-shadow: 0 15px 30px rgba(0,0,0,0.15); color: white; text-align: center; }
+    .bkash-header { background: #d11162; padding: 25px; }
+    .bkash-logo { height: 45px; }
+    .bkash-body { padding: 30px 25px; background: #e2136e; }
+    .pay-btn { background: #b10d54; color: white; font-weight: bold; border: 2px solid rgba(255,255,255,0.4); padding: 12px 0; width: 100%; border-radius: 8px; margin-top: 20px; transition: 0.2s; }
+    .pay-btn:hover { background: white; color: #e2136e; }
+</style>
+
+<div class="bkash-frame">
+    <div class="bkash-header">
+        <img src="https://www.logo.wine/a/logo/BKash/BKash-bKash2-Logo.wine.svg" class="bkash-logo" alt="bKash">
+        <h5 class="mt-2 fw-bold">Online Sandbox Payment</h5>
+    </div>
+    <div class="bkash-body">
+        <p class="mb-1 text-light">Merchant: <b>KitZone Ltd.</b></p>
+        <p class="mb-4 text-light">Invoice ID: <b>#{{ order.id }}</b></p>
+        <h2 class="fw-bold mb-4">৳{{ order.grand_total }}</h2>
+        
+        <p style="font-size:0.85rem;" class="opacity-75">This is a simulated secure bKash Sandbox payment gateway environment for testing purpose.</p>
+        
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="pay-btn">CONFIRM SIMULATED PAYMENT</button>
+        </form>
+        <a href="{% url 'checkout' %}" class="d-block text-white mt-3 opacity-75" style="font-size:0.85rem;">Cancel Payment</a>
+    </div>
+</div>
+{% endblock %}

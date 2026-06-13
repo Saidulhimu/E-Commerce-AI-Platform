@@ -6,18 +6,24 @@
     <title>Register | KitZone Premium</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            --bg-dark: #070a13;
-            --card-bg: rgba(13, 20, 38, 0.45);
+            --bg-dark: #05070f;
+            --card-bg: rgba(10, 15, 30, 0.55);
             --accent-gold: #ffb703;
             --accent-orange: #fb8500;
+            --input-bg: rgba(5, 7, 15, 0.65);
+            --text-muted: #94a3b8;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         
         body {
-            background: radial-gradient(circle at 50% 50%, #0f1c3f 0%, #050814 100%);
+            /* লগইন পেজের সাথে হুবহু ম্যাচিং স্টেডিয়াম ও ম্যাচ ডে ভাইব ব্যাকগ্রাউন্ড */
+            background: linear-gradient(135deg, rgba(5, 7, 15, 0.93) 0%, rgba(15, 23, 42, 0.88) 100%),
+                        url('https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
             color: #ffffff;
             min-height: 100vh;
             display: flex;
@@ -27,23 +33,32 @@
             overflow-x: hidden;
         }
 
+        /* মেইন গ্লাস কন্টেইনার (৪টি ফিল্ডের জন্য হাইট হালকা অপ্টিমাইজড) */
         .auth-container {
             display: flex;
             background: var(--card-bg);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 32px;
+            border-radius: 28px;
             width: 100%;
-            max-width: 900px;
-            min-height: 600px;
-            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8), 0 0 60px rgba(253, 133, 0, 0.05);
+            max-width: 950px;
+            min-height: 640px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.7), 
+                        0 0 50px rgba(251, 133, 0, 0.05);
             overflow: hidden;
+            animation: cardEntrance 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: scale(0.96) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* ⚽ বাম পাশের প্রিমিয়াম গ্লোয়িং জার্সি ব্যানার */
         .auth-visual {
-            flex: 1;
-            background: linear-gradient(135deg, rgba(5, 8, 20, 0.92) 0%, rgba(15, 23, 42, 0.65) 100%),
+            flex: 1.1;
+            background: linear-gradient(135deg, rgba(4, 8, 18, 0.95) 0%, rgba(0, 75, 35, 0.45) 100%),
                         url('https://images.unsplash.com/photo-1551958219-acbc608c6377?auto=format&fit=crop&w=800&q=80') no-repeat center center;
             background-size: cover;
             display: flex;
@@ -58,56 +73,68 @@
 
         @media (max-width: 768px) {
             .auth-visual { display: none; }
-            .auth-container { max-width: 450px; }
+            .auth-container { max-width: 485px; }
         }
 
+        /* ডাবল জার্সি নিয়ন গ্লো আইকন */
         .jersey-badge-stack {
             display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 18px;
+            margin-bottom: 25px;
         }
 
         .jersey-icon-glow {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 183, 3, 0.4);
-            border-radius: 16px;
+            width: 65px;
+            height: 65px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 183, 3, 0.35);
+            border-radius: 18px;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 1.8rem;
             color: var(--accent-gold);
-            box-shadow: 0 0 20px rgba(255, 183, 3, 0.2);
-            animation: float 4s ease-in-out infinite alternate;
+            box-shadow: 0 0 25px rgba(255, 183, 3, 0.25);
+            animation: floatAnimation 4s ease-in-out infinite alternate;
         }
 
         .jersey-icon-glow:nth-child(2) {
             color: #00e5ff;
-            border-color: rgba(0, 229, 255, 0.4);
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+            border-color: rgba(0, 229, 255, 0.35);
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.25);
             animation-delay: 1s;
         }
 
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            100% { transform: translateY(-10px); }
+        @keyframes floatAnimation {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-12px) rotate(3deg); }
         }
 
-        .visual-title { font-size: 1.8rem; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 12px; line-height: 1.3; }
-        .visual-title span { color: var(--accent-gold); }
-        .visual-subtitle { color: #94a3b8; font-size: 0.9rem; max-width: 290px; font-weight: 400; line-height: 1.5; }
+        .visual-title { 
+            font-size: 1.9rem; 
+            font-weight: 800; 
+            letter-spacing: -0.5px; 
+            margin-bottom: 15px; 
+            line-height: 1.3; 
+        }
+        .visual-title span { 
+            color: var(--accent-gold); 
+            text-shadow: 0 0 15px rgba(255, 183, 3, 0.3);
+        }
+        .visual-subtitle { color: #94a3b8; font-size: 0.9rem; max-width: 310px; font-weight: 400; line-height: 1.6; }
 
+        /* 🔐 ডান পাশের মেইন ফর্ম সেকশন */
         .auth-form-side {
             flex: 1;
-            padding: 40px 45px;
+            padding: 35px 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
+        /* গোল্ডেন নিউ অ্যাকাউন্ট ব্যাজ */
         .pro-badge {
-            background: rgba(255, 183, 3, 0.08);
+            background: rgba(255, 183, 3, 0.07);
             color: var(--accent-gold);
             padding: 6px 16px;
             border-radius: 30px;
@@ -116,51 +143,62 @@
             text-transform: uppercase;
             letter-spacing: 1.5px;
             align-self: center;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 183, 3, 0.25);
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 183, 3, 0.2);
         }
 
-        .brand-logo { font-size: 2.4rem; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; text-align: center; }
-        .brand-logo span { color: var(--accent-gold); text-shadow: 0 0 20px rgba(255, 183, 3, 0.4); }
-        .subtitle { color: #64748b; font-size: 0.85rem; margin-bottom: 25px; text-align: center; }
+        .brand-logo { font-size: 2.3rem; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; text-align: center; letter-spacing: -0.5px;}
+        .brand-logo span { color: var(--accent-gold); text-shadow: 0 0 25px rgba(255, 183, 3, 0.45); }
+        .subtitle { color: #64748b; font-size: 0.85rem; margin-bottom: 22px; text-align: center; }
         
+        /* Django এরর মেসেজ ব্লক */
         .alert-messages {
             background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            border: 1px solid rgba(239, 68, 68, 0.25);
             color: #fca5a5;
             padding: 10px 14px;
             border-radius: 12px;
             font-size: 0.85rem;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             list-style: none;
         }
 
-        .form-group { margin-bottom: 18px; }
-        .form-group label { font-size: 0.75rem; font-weight: 600; color: #94a3b8; display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* ফর্ম ইনপুট লেআউট */
+        .form-group { margin-bottom: 16px; }
+        .form-group label { 
+            font-size: 0.72rem; 
+            font-weight: 700; 
+            color: #94a3b8; 
+            display: block; 
+            margin-bottom: 6px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.8px; 
+        }
         
         .input-wrapper { position: relative; display: flex; align-items: center; }
         .form-group i.input-icon { position: absolute; left: 18px; color: #475569; font-size: 1.05rem; pointer-events: none; transition: color 0.3s; }
         
         .form-group input {
             width: 100%;
-            background: rgba(7, 10, 19, 0.6) !important;
+            background: var(--input-bg) !important;
             border: 1px solid rgba(255, 255, 255, 0.08);
             padding: 12px 50px 12px 52px;
             border-radius: 14px;
             color: white !important;
             outline: none;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
+            font-size: 0.92rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .form-group input:focus { 
             border-color: var(--accent-gold); 
-            box-shadow: 0 0 20px rgba(255, 183, 3, 0.15);
-            background: rgba(7, 10, 19, 0.85) !important;
+            box-shadow: 0 0 20px rgba(255, 183, 3, 0.2);
+            background: rgba(5, 7, 15, 0.85) !important;
         }
 
         .form-group input:focus ~ i.input-icon { color: var(--accent-gold); }
         
+        /* পাসওয়ার্ড টগল আইকন */
         .toggle-password {
             position: absolute;
             right: 18px;
@@ -168,30 +206,42 @@
             cursor: pointer;
             padding: 5px;
             font-size: 1.05rem;
+            transition: color 0.2s;
         }
         .toggle-password:hover { color: var(--accent-gold); }
 
+        /* ব্রাউজার অটোফিল ওভাররাইড স্টাইল */
         input:-webkit-autofill {
             -webkit-text-fill-color: #ffffff !important;
             transition: background-color 5000s ease-in-out 0s;
-            box-shadow: inset 0 0 0px 9999px #070a13 !important;
+            box-shadow: inset 0 0 0px 9999px #05070f !important;
         }
         
+        /* প্রিমিয়াম ভাইব্রেন্ট বাটন */
         .login-btn {
             background: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
-            color: white; border: none; width: 100%; padding: 14px; border-radius: 14px;
-            font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s;
-            margin-top: 10px; box-shadow: 0 6px 25px rgba(251, 133, 0, 0.25);
-            text-transform: uppercase; letter-spacing: 0.5px;
+            color: #05070f; 
+            border: none; 
+            width: 100%; 
+            padding: 13px; 
+            border-radius: 14px;
+            font-weight: 700; 
+            font-size: 0.95rem; 
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 8px; 
+            box-shadow: 0 6px 20px rgba(251, 133, 0, 0.3);
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
         }
         .login-btn:hover { 
-            background: linear-gradient(135deg, #fb8500 0%, #ffb703 100%); 
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(251, 133, 0, 0.4);
+            box-shadow: 0 10px 25px rgba(251, 133, 0, 0.45);
+            opacity: 0.95;
         }
         
-        .switch-auth { margin-top: 25px; font-size: 0.85rem; color: #64748b; text-align: center; }
-        .switch-auth a { color: var(--accent-gold); text-decoration: none; font-weight: 600; }
+        .switch-auth { margin-top: 22px; font-size: 0.85rem; color: #64748b; text-align: center; }
+        .switch-auth a { color: var(--accent-gold); text-decoration: none; font-weight: 700; margin-left: 3px;}
         .switch-auth a:hover { color: var(--accent-orange); text-decoration: underline; }
     </style>
 </head>
@@ -204,12 +254,12 @@
                 <div class="jersey-icon-glow"><i class="fa-solid fa-shirt"></i></div>
                 <div class="jersey-icon-glow"><i class="fa-solid fa-circle-nodes"></i></div>
             </div>
-            <h2 class="visual-title">Premium Football & <span>World Cup Kits</span></h2>
+            <h2 class="visual-title">Premium Football & <br><span>World Cup Kits</span></h2>
             <p class="visual-subtitle">Join the squad today and start building your ultimate collection.</p>
         </div>
 
         <div class="auth-form-side">
-            <span class="pro-badge"><i class="fa-solid fa-user-plus"></i> Create New Account</span>
+            <span class="pro-badge"><i class="fa-solid fa-user-plus me-1"></i> Create New Account</span>
             
             <div class="brand-logo">🏆 Kit<span>Zone</span></div>
             <div class="subtitle">Unlock the premium with world-class kits</div>
@@ -217,7 +267,7 @@
             {% if messages %}
                 <ul class="alert-messages">
                     {% for message in messages %}
-                        <li><i class="fa-solid fa-circle-exclamation"></i> {{ message }}</li>
+                        <li><i class="fa-solid fa-circle-exclamation me-1"></i> {{ message }}</li>
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -259,11 +309,13 @@
                     </div>
                 </div>
                 
-                <button type="submit" class="login-btn">Register Now</button>
+                <button type="submit" class="login-btn">
+                    <i class="fa-solid fa-user-check me-2"></i> Register Now
+                </button>
             </form>
             
             <div class="switch-auth">
-                Already part of the squad? <a href="{% url 'login' %}">Log In</a>
+               Already part of the squad? <a href="{% url 'login' %}">Log In</a>
             </div>
         </div>
 
@@ -273,13 +325,17 @@
         function setupPasswordToggle(toggleId, inputId) {
             const toggle = document.querySelector(toggleId);
             const input = document.querySelector(inputId);
-            toggle.addEventListener('click', function () {
-                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-                input.setAttribute('type', type);
-                this.classList.toggle('fa-eye');
-                this.classList.toggle('fa-eye-slash');
-            });
+            
+            if(toggle && input) {
+                toggle.addEventListener('click', function () {
+                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                    input.setAttribute('type', type);
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                });
+            }
         }
+        // দুটি পাসওয়ার্ড ইনপুটের জন্যই টগল ফাংশন চালু করা হলো
         setupPasswordToggle('#togglePassword', '#id_password');
         setupPasswordToggle('#toggleConfirmPassword', '#id_confirm_password');
     </script>
